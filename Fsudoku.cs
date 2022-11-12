@@ -13,13 +13,12 @@ namespace Sodoku
 {
     public partial class Fsodoku : Form
     {
+
+        private Sudoku sudoku = new Sudoku();
         private static Color colorSelection = Color.FromArgb(255, 170, 203, 255);
-        int[,] grid = new int[9, 9];
-        int[,] gridSolution = new int[9, 9];
         public Fsodoku()
         {
             InitializeComponent();
-
         }
 
         private void WindowsSodoku_Load(object sender, EventArgs e)
@@ -38,12 +37,12 @@ namespace Sodoku
                 }
             }
             dvg_motus.CurrentCell.Selected = false;
-            this.dvg_motus.CurrentCellChanged += new System.EventHandler(this.dvg_motus_CurrentCellChanged);
+            this.dvg_motus.CurrentCellChanged += new System.EventHandler(this.Dvg_motus_CurrentCellChanged);
 
-            afficher();
-            start();
+            Afficher();
+            Start();
         }
-        private void afficher()
+        private void Afficher()
         {
             for (int x = 0; x < 9; x++)
             {
@@ -56,7 +55,7 @@ namespace Sodoku
                     //Tout les 2 bloc 3*3 on leur attribut un fond differents
                     if (xAbsolue % 2 == 0)
                     {
-                        dvg_motus.Rows[y].Cells[x].Style.BackColor = Color.FromArgb(255, 191, 212, 245);
+                        Dvg_motus.Rows[y].Cells[x].Style.BackColor = Color.FromArgb(255, 191, 212, 245);
                     }
                     else
                     {*/
@@ -108,139 +107,22 @@ namespace Sodoku
             }
         }
 
-        private void start()
+        private void Start()
         {
-
-            this.solve(grid);
-            gridSolution = (int[,])grid.Clone();
-
-            int[] nombres = new int[81];
-            for (int x = 0; x < 81; x++)
-            {
-                nombres[x] = x;
-            }
-            foreach (int i in randomizeArray(nombres))
-            {
-
-                int x = i % 9;
-                int y = i / 9;
-
-                int temp = grid[x, y];
-                grid[x, y] = 0;
-                int[,] copie = (int[,])grid.Clone();
-
-                if (this.solveCount(copie, 0, 0) == 2)
-                {
-                    grid[x, y] = temp;
-                }
-            }
-
+            sudoku.genererGrille();
+            int[,] grille = sudoku.getGrille();
 
             for (int x = 0; x < 9; x++)
             {
                 for (int y = 0; y < 9; y++)
                 {
-                    dvg_motus.Rows[y].Cells[x].Value = grid[x, y] != 0 ? "" + grid[x, y] : "";
+                    dvg_motus.Rows[y].Cells[x].Value = grille[x, y] != 0 ? "" + grille[x, y] : "";
                 }
             }
 
         }
 
-        private bool solve(int[,] a, int x = 0, int y = 0)
-        {
-            if (y == 9) return true;
-            if (x == 9) return solve(a, 0, y + 1);
-            if (a[x, y] != 0) return solve(a, x + 1, y);
-            int[] nombres = new int[9] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-            foreach (int i in randomizeArray(nombres)) {
-                if (nestPasDansLaLigne(i, x, y) && nestPasDansLaColonne(i, x, y) && controleInterieurCarre(i, x, y))
-                {
-                    a[x, y] = i;
-                    if (solve(a, x + 1, y)) return true;
-                    a[x, y] = 0;
-                }
-            }
-            return false;
-        }
-
-        private int solveCount(int[,] grid, int x, int y)
-        {
-            if (y == 9) return 1;
-            if (x == 9) return solveCount(grid, 0, y + 1);
-            if (grid[x, y] != 0) return solveCount(grid, x + 1, y);
-            int possibilite = 0;
-
-            int[] nombres = new int[9] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-            foreach (int i in randomizeArray(nombres))
-            {
-                if (nestPasDansLaLigne(i, x, y) && nestPasDansLaColonne(i, x, y) && controleInterieurCarre(i, x, y))
-                {
-                    grid[x, y] = i;
-                    possibilite += solveCount(grid, x + 1, y);
-                    if (possibilite == 2) return possibilite;
-                    grid[x, y] = 0;
-                }
-            }
-            return possibilite;
-        }
-
-        private bool nestPasDansLaLigne(int valeur, int x, int y)
-        {
-            for (int i = 0; i < 9; i++)
-            {
-                if (grid[i, y] == valeur) return false;
-            }
-            return true;
-        }
-
-        private bool nestPasDansLaColonne(int valeur, int x, int y)
-        {
-            for (int i = 0; i < 9; i++)
-            {
-                if (grid[x, i] == valeur) return false;
-            }
-            return true;
-        }
-
-        private bool controleInterieurCarre(int valeur, int x, int y)
-        {
-            int colonneAbsolue = ((int)x / 3) * 3;
-            int ligneAbsolue = ((int)y / 3) * 3;
-            for (int colonne = colonneAbsolue; colonne < colonneAbsolue + 3; colonne++)
-            {
-                for (int ligne = ligneAbsolue; ligne < ligneAbsolue + 3; ligne++)
-                {
-                    if (grid[colonne, ligne] == valeur) return false;
-                }
-            }
-            return true;
-        }
-        public static int[] randomizeArray(int[] nombres)
-        {
-            Random rnd = new Random();
-
-            for (int i = nombres.Length - 1; i >= 0; i--)
-            {
-                int k = rnd.Next(0, 8);
-                int value = nombres[k];
-                nombres[k] = nombres[i];
-                nombres[i] = value;
-            }
-            return nombres;
-
-        }
-        private void dvg_motus_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            start();
-        }
-
-
-        private void dvg_motus_KeyPress(object sender, KeyPressEventArgs e)
+        private void Dvg_motus_KeyPress(object sender, KeyPressEventArgs e)
         {
 
             //Si aucune case n'est selectionnée
@@ -255,13 +137,13 @@ namespace Sodoku
             if ((int)e.KeyChar == 8)
             {
                 //On regarde si la case n'est pas une indication
-                if (grid[x, y] == 0)
+                if (!sudoku.caseEstUnIndice(x, y))
                 {
                     dvg_motus.Rows[y].Cells[x].Value = "";
                     dvg_motus.CurrentCell.Style.SelectionBackColor = colorSelection;
                     dvg_motus.CurrentCell.Style.SelectionForeColor = Color.Black;
                 }
-                afficher();
+                Afficher();
                 return;
             }
             //System.Diagnostics.Debug.WriteLine();
@@ -273,7 +155,7 @@ namespace Sodoku
             if (dvg_motus.Rows[y].Cells[x].Value.ToString().Equals(""))
             {
                 dvg_motus.Rows[y].Cells[x].Value = e.KeyChar.ToString();
-                if (gridSolution[x, y].ToString() != e.KeyChar.ToString())
+                if (sudoku.caseEstValide(e.KeyChar.ToString(),x,y))
                 {
                     dvg_motus.Rows[y].Cells[x].Style.ForeColor = Color.FromArgb(255, 255, 0, 0);
 
@@ -284,10 +166,10 @@ namespace Sodoku
                 {
                     dvg_motus.Rows[y].Cells[x].Style.ForeColor = Color.FromArgb(255, 0, 0, 255);
                 }
-                afficher();
+                Afficher();
             }
         }
-        private void dvg_motus_Paint(object sender, PaintEventArgs e)
+        private void Dvg_motus_Paint(object sender, PaintEventArgs e)
         {
             for (int x = 0; x< 9; x+=3)
             {
@@ -299,14 +181,20 @@ namespace Sodoku
 
         }
 
-        private void dvg_motus_CellEnter(object sender, DataGridViewCellEventArgs e)
+        private void Dvg_motus_CellEnter(object sender, DataGridViewCellEventArgs e)
         {
         }
 
-        private void dvg_motus_CurrentCellChanged(object sender, EventArgs e)
+        private void Dvg_motus_CurrentCellChanged(object sender, EventArgs e)
         {
-            afficher();
+            Afficher();
 
         }
+
+        private void Bt_rejouer_Click(object sender, EventArgs e)
+        {
+            Start();
+        }
+
     }
 }
