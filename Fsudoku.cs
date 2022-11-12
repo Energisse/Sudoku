@@ -15,7 +15,8 @@ namespace Sodoku
     {
 
         private Sudoku sudoku = new Sudoku();
-        private static Color colorSelection = Color.FromArgb(255, 170, 203, 255);
+        private static Color couleurSelection = Color.FromArgb(255, 170, 203, 255);
+        private static Color couleurVoisin = Color.FromArgb(255, 225, 225, 225);
         private int vie = 3;
 
         public Fsodoku()
@@ -26,14 +27,14 @@ namespace Sodoku
         private void WindowsSodoku_Load(object sender, EventArgs e)
         {
             dvg_motus.RowCount = 9;
-            dvg_motus.ColumnCount = 9;
+            dvg_motus.ColumnCount = 9; 
             for (int x = 0; x < 9; x++)
             {
                 dvg_motus.Columns[x].Width = 50;
                 for (int y = 0; y < 9; y++)
                 {
                     dvg_motus.Rows[y].Height = 50;
-                    dvg_motus.Rows[y].Cells[x].Style.SelectionBackColor = colorSelection;
+                    dvg_motus.Rows[y].Cells[x].Style.SelectionBackColor = couleurSelection;
                     dvg_motus.Rows[y].Cells[x].Style.SelectionForeColor = Color.Black;
 
                 }
@@ -61,7 +62,7 @@ namespace Sodoku
                     }
                     else
                     {*/
-                    dvg_motus.Rows[y].Cells[x].Style.BackColor = Color.FromArgb(255, 255, 255, 255);
+                    dvg_motus.Rows[y].Cells[x].Style.BackColor = Color.White;
 
                     /* }*/
                 }
@@ -76,8 +77,8 @@ namespace Sodoku
             /*COLORIAGE DES AXES X(9*1) ET Y(1*9) DE LA CASE SELECTIONNEE*/
             for (int i = 0; i < 9; i++)
             {
-                dvg_motus.Rows[posY].Cells[i].Style.BackColor = Color.FromArgb(255, 225, 225, 225);
-                dvg_motus.Rows[i].Cells[posX].Style.BackColor = Color.FromArgb(255, 225, 225, 225);
+                dvg_motus.Rows[posY].Cells[i].Style.BackColor = couleurVoisin;
+                dvg_motus.Rows[i].Cells[posX].Style.BackColor = couleurVoisin;
             }
 
 
@@ -88,7 +89,7 @@ namespace Sodoku
             {
                 for (int y = 0; y < 3; y++)
                 {
-                    dvg_motus.Rows[y + yAbsolue].Cells[x + xAbsolue].Style.BackColor = Color.FromArgb(255, 225, 225, 225);
+                    dvg_motus.Rows[y + yAbsolue].Cells[x + xAbsolue].Style.BackColor = couleurVoisin;
                 }
             }
 
@@ -102,7 +103,7 @@ namespace Sodoku
                     {
                         if (dvg_motus.Rows[y].Cells[x].Value.ToString().Equals(nombre))
                         {
-                            dvg_motus.Rows[y].Cells[x].Style.BackColor = colorSelection;
+                            dvg_motus.Rows[y].Cells[x].Style.BackColor = couleurSelection;
                         }
                     }
                 }
@@ -122,6 +123,7 @@ namespace Sodoku
                 for (int y = 0; y < 9; y++)
                 {
                     dvg_motus.Rows[y].Cells[x].Value = grille[x, y] != 0 ? "" + grille[x, y] : "";
+                    dvg_motus.Rows[y].Cells[x].Style = null;
                 }
             }
             Afficher();
@@ -146,8 +148,8 @@ namespace Sodoku
                 //On regarde si la case n'est pas une indication
                 if (!sudoku.caseEstUnIndice(x, y))
                 {
-                    dvg_motus.Rows[y].Cells[x].Value = "";
-                    dvg_motus.CurrentCell.Style.SelectionBackColor = colorSelection;
+                    dvg_motus.CurrentCell.Value = "";
+                    dvg_motus.CurrentCell.Style.SelectionBackColor = couleurSelection;
                     dvg_motus.CurrentCell.Style.SelectionForeColor = Color.Black;
                 }
                 Afficher();
@@ -159,19 +161,19 @@ namespace Sodoku
             //Ascii code des nombres [1;9] = [49;57]
             if ((int)e.KeyChar < 49 || (int)e.KeyChar > 57) return;
 
-            if (dvg_motus.Rows[y].Cells[x].Value.ToString().Equals(""))
+            if (dvg_motus.CurrentCell.Value.ToString().Equals(""))
             {
-                dvg_motus.Rows[y].Cells[x].Value = e.KeyChar.ToString();
+                dvg_motus.CurrentCell.Value = e.KeyChar.ToString();
                 if (!sudoku.caseEstValide(e.KeyChar.ToString(),x,y))
                 {
                     vie--;
-                    dvg_motus.Rows[y].Cells[x].Style.ForeColor = Color.FromArgb(255, 255, 0, 0);
+                    dvg_motus.CurrentCell.Style.ForeColor = Color.Red;
                     dvg_motus.CurrentCell.Style.SelectionBackColor = Color.Red;
                     dvg_motus.CurrentCell.Style.SelectionForeColor = Color.White;
                 }
                 else
                 {
-                    dvg_motus.Rows[y].Cells[x].Style.ForeColor = Color.FromArgb(255, 0, 0, 255);
+                    dvg_motus.CurrentCell.Style.ForeColor = Color.Red;
                 }
                 Afficher();
             }

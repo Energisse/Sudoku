@@ -13,6 +13,7 @@ namespace Sodoku
 
         public void genererGrille()
         {
+            this.grille = new int[9, 9];
             this.resoudre(grille);
             grilleSolution = (int[,])grille.Clone();
 
