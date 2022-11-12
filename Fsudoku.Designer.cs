@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Fsodoku));
             this.bt_rejouer = new System.Windows.Forms.Button();
             this.pageSetupDialog1 = new System.Windows.Forms.PageSetupDialog();
@@ -37,8 +37,12 @@
             this.printDocument2 = new System.Drawing.Printing.PrintDocument();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.lb_vie = new System.Windows.Forms.Label();
+            this.bt_indice = new System.Windows.Forms.Button();
+            this.pictureBox2 = new System.Windows.Forms.PictureBox();
+            this.lb_indice = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dvg_motus)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.SuspendLayout();
             // 
             // bt_rejouer
@@ -61,14 +65,14 @@
             this.dvg_motus.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.dvg_motus.ColumnHeadersVisible = false;
             this.dvg_motus.Cursor = System.Windows.Forms.Cursors.Default;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F);
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(170)))), ((int)(((byte)(203)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dvg_motus.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F);
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(170)))), ((int)(((byte)(203)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dvg_motus.DefaultCellStyle = dataGridViewCellStyle3;
             this.dvg_motus.EnableHeadersVisualStyles = false;
             this.dvg_motus.Location = new System.Drawing.Point(229, 77);
             this.dvg_motus.MultiSelect = false;
@@ -98,32 +102,64 @@
             // 
             // lb_vie
             // 
-            this.lb_vie.AutoSize = true;
             this.lb_vie.Font = new System.Drawing.Font("Microsoft Sans Serif", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lb_vie.Location = new System.Drawing.Point(594, 19);
+            this.lb_vie.Location = new System.Drawing.Point(530, 19);
             this.lb_vie.Margin = new System.Windows.Forms.Padding(0);
             this.lb_vie.Name = "lb_vie";
-            this.lb_vie.Size = new System.Drawing.Size(51, 55);
+            this.lb_vie.Size = new System.Drawing.Size(100, 55);
             this.lb_vie.TabIndex = 3;
             this.lb_vie.Text = "3";
             this.lb_vie.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // bt_indice
+            // 
+            this.bt_indice.Location = new System.Drawing.Point(747, 77);
+            this.bt_indice.Name = "bt_indice";
+            this.bt_indice.Size = new System.Drawing.Size(75, 23);
+            this.bt_indice.TabIndex = 4;
+            this.bt_indice.Text = "Indice";
+            this.bt_indice.UseVisualStyleBackColor = true;
+            this.bt_indice.Click += new System.EventHandler(this.Bt_indice_Click);
+            // 
+            // pictureBox2
+            // 
+            this.pictureBox2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox2.Image")));
+            this.pictureBox2.Location = new System.Drawing.Point(229, 24);
+            this.pictureBox2.Name = "pictureBox2";
+            this.pictureBox2.Size = new System.Drawing.Size(48, 50);
+            this.pictureBox2.TabIndex = 5;
+            this.pictureBox2.TabStop = false;
+            // 
+            // lb_indice
+            // 
+            this.lb_indice.Font = new System.Drawing.Font("Microsoft Sans Serif", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lb_indice.Location = new System.Drawing.Point(270, 19);
+            this.lb_indice.Margin = new System.Windows.Forms.Padding(0);
+            this.lb_indice.Name = "lb_indice";
+            this.lb_indice.Size = new System.Drawing.Size(100, 55);
+            this.lb_indice.TabIndex = 6;
+            this.lb_indice.Text = "3";
+            this.lb_indice.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // Fsodoku
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(952, 639);
+            this.Controls.Add(this.pictureBox2);
+            this.Controls.Add(this.bt_indice);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.dvg_motus);
             this.Controls.Add(this.bt_rejouer);
             this.Controls.Add(this.lb_vie);
+            this.Controls.Add(this.lb_indice);
             this.Name = "Fsodoku";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.WindowsSodoku_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dvg_motus)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -135,6 +171,9 @@
         private System.Drawing.Printing.PrintDocument printDocument2;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Label lb_vie;
+        private System.Windows.Forms.Button bt_indice;
+        private System.Windows.Forms.PictureBox pictureBox2;
+        private System.Windows.Forms.Label lb_indice;
     }
 }
 

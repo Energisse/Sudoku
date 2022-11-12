@@ -17,7 +17,6 @@ namespace Sodoku
         private Sudoku sudoku = new Sudoku();
         private static Color couleurSelection = Color.FromArgb(255, 170, 203, 255);
         private static Color couleurVoisin = Color.FromArgb(255, 225, 225, 225);
-        private int vie = 3;
 
         public Fsodoku()
         {
@@ -34,9 +33,7 @@ namespace Sodoku
                 for (int y = 0; y < 9; y++)
                 {
                     dvg_motus.Rows[y].Height = 50;
-                    dvg_motus.Rows[y].Cells[x].Style.SelectionBackColor = couleurSelection;
-                    dvg_motus.Rows[y].Cells[x].Style.SelectionForeColor = Color.Black;
-
+                    dvg_motus.Rows[y].Cells[x].Style = null;
                 }
             }
             dvg_motus.CurrentCell.Selected = false;
@@ -109,50 +106,42 @@ namespace Sodoku
                 }
             }
 
-            lb_vie.Text = vie.ToString();
+            lb_vie.Text = sudoku.vieRestante.ToString();
+            lb_indice.Text = sudoku.indiceRestant.ToString();
         }
 
         private void Start()
         {
-            vie = 3;
             sudoku.genererGrille();
-            int[,] grille = sudoku.getGrille();
-
             for (int x = 0; x < 9; x++)
             {
                 for (int y = 0; y < 9; y++)
                 {
-                    dvg_motus.Rows[y].Cells[x].Value = grille[x, y] != 0 ? "" + grille[x, y] : "";
-                    dvg_motus.Rows[y].Cells[x].Style = null;
+                    dvg_motus.Rows[y].Cells[x].Style = null ;
                 }
             }
-            Afficher();
+            AfficherGrille();
         }
 
         private void Dvg_motus_KeyPress(object sender, KeyPressEventArgs e)
         {
             //Si la partie est fini
-            if (vie == 0) return;
+            if (sudoku.estMort()) return;
 
             //Si aucune case n'est selectionnée
             if (dvg_motus.CurrentCell.Selected == false) return;
 
             int x = dvg_motus.CurrentCellAddress.X;
             int y = dvg_motus.CurrentCellAddress.Y;
-            //if()
-            System.Diagnostics.Debug.WriteLine((int)e.KeyChar);
 
             //Si effacement de la case
             if ((int)e.KeyChar == 8)
             {
                 //On regarde si la case n'est pas une indication
-                if (!sudoku.caseEstUnIndice(x, y))
-                {
-                    dvg_motus.CurrentCell.Value = "";
-                    dvg_motus.CurrentCell.Style.SelectionBackColor = couleurSelection;
-                    dvg_motus.CurrentCell.Style.SelectionForeColor = Color.Black;
-                }
-                Afficher();
+                sudoku.jouer(0, x, y);
+                dvg_motus.CurrentCell.Style.SelectionBackColor = couleurSelection;
+                dvg_motus.CurrentCell.Style.SelectionForeColor = Color.Black;
+                AfficherGrille();
                 return;
             }
             //System.Diagnostics.Debug.WriteLine();
@@ -160,23 +149,17 @@ namespace Sodoku
             //On prends uniquement les chiffre de 1 a 9
             //Ascii code des nombres [1;9] = [49;57]
             if ((int)e.KeyChar < 49 || (int)e.KeyChar > 57) return;
-
-            if (dvg_motus.CurrentCell.Value.ToString().Equals(""))
-            {
-                dvg_motus.CurrentCell.Value = e.KeyChar.ToString();
-                if (!sudoku.caseEstValide(e.KeyChar.ToString(),x,y))
-                {
-                    vie--;
-                    dvg_motus.CurrentCell.Style.ForeColor = Color.Red;
-                    dvg_motus.CurrentCell.Style.SelectionBackColor = Color.Red;
-                    dvg_motus.CurrentCell.Style.SelectionForeColor = Color.White;
-                }
-                else
-                {
-                    dvg_motus.CurrentCell.Style.ForeColor = Color.Red;
-                }
-                Afficher();
+            dvg_motus.CurrentCell.Value = e.KeyChar.ToString();
+            if (sudoku.jouer((int)e.KeyChar - 48, x, y)){
+                dvg_motus.CurrentCell.Style.ForeColor = Color.Blue;
             }
+            else
+            {
+                dvg_motus.CurrentCell.Style.ForeColor = Color.Red;
+                dvg_motus.CurrentCell.Style.SelectionBackColor = Color.Red;
+                dvg_motus.CurrentCell.Style.SelectionForeColor = Color.White;
+            }
+            AfficherGrille();
         }
         private void Dvg_motus_Paint(object sender, PaintEventArgs e)
         {
@@ -200,6 +183,49 @@ namespace Sodoku
             Start();
         }
 
-     
+        private void AfficherGrille()
+        {
+            if (sudoku.estMort())
+            {
+                MessageBox.Show("Et c'est perdu", "Perdu");
+                for (int x = 0; x < 9; x++)
+                {
+                    for (int y = 0; y < 9; y++)
+                    {
+                        if(sudoku.grilleSolution[x, y] != sudoku.grille[x, y])
+                        {
+                            dvg_motus.Rows[y].Cells[x].Style.ForeColor = Color.Red;
+                        }
+                        dvg_motus.Rows[y].Cells[x].Value = sudoku.grilleSolution[x, y].ToString();
+                    }
+                }
+            }
+            else if (sudoku.aGagne())
+            {
+                MessageBox.Show("Et c'est gagné", "Gagné");
+            }
+            else
+            {
+                for (int x = 0; x < 9; x++)
+                {
+                    for (int y = 0; y < 9; y++)
+                    {
+                        dvg_motus.Rows[y].Cells[x].Value = sudoku.grille[x, y] != 0 ? sudoku.grille[x, y].ToString() : "";
+                    }
+                }
+
+            }
+            Afficher();
+        }
+
+        private void Bt_indice_Click(object sender, EventArgs e)
+        {
+            if (sudoku.estMort()) return;
+            (int x, int y ) = sudoku.Indice();
+            if (x == -1) return;
+            dvg_motus.CurrentCell = dvg_motus.Rows[y].Cells[x];
+            dvg_motus.CurrentCell.Style.ForeColor = Color.Blue;
+            AfficherGrille();
+        }
     }
 }
