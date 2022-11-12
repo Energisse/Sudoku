@@ -137,16 +137,7 @@ namespace Sodoku
             //Si effacement de la case
             if ((int)e.KeyChar == 8)
             {
-                //On regarde si la case n'est pas une indication
-                if (notes) {
-                    sudoku.noter(0, x, y);
-                }
-                else
-                {
-                    sudoku.jouer(0, x, y);
-                    dvg_motus.CurrentCell.Style.SelectionBackColor = couleurSelection;
-                    dvg_motus.CurrentCell.Style.SelectionForeColor = Color.Black;
-                }
+                Effacer(x,y);
                 AfficherGrille();
                 return;
             }
@@ -155,19 +146,7 @@ namespace Sodoku
             //Ascii code des nombres [1;9] = [49;57]
             if ((int)e.KeyChar < 49 || (int)e.KeyChar > 57) return;
             dvg_motus.CurrentCell.Value = e.KeyChar.ToString();
-            if (notes)
-            {
-                sudoku.noter((int)e.KeyChar - 48, x, y);
-            }
-            else if (sudoku.jouer((int)e.KeyChar - 48, x, y)){
-                dvg_motus.CurrentCell.Style.ForeColor = Color.Blue;
-            }
-            else
-            {
-                dvg_motus.CurrentCell.Style.ForeColor = Color.Red;
-                dvg_motus.CurrentCell.Style.SelectionBackColor = Color.Red;
-                dvg_motus.CurrentCell.Style.SelectionForeColor = Color.White;
-            }
+            Placer((int)e.KeyChar - 48, x, y);
             AfficherGrille();
         }
         private void Dvg_motus_Paint(object sender, PaintEventArgs e)
@@ -256,6 +235,52 @@ namespace Sodoku
         {
             notes = !notes;
             bt_notes.BackColor = notes ? Color.Blue : Color.White ;
+        }
+
+        private void Placer(int v, int x, int y)
+        {
+
+            if (notes)
+            {
+                sudoku.Noter(v, x, y);
+            }
+            else if (sudoku.Jouer(v, x, y))
+            {
+                dvg_motus.CurrentCell.Style.ForeColor = Color.Blue;
+            }
+            else
+            {
+                dvg_motus.CurrentCell.Style.ForeColor = Color.Red;
+                dvg_motus.CurrentCell.Style.SelectionBackColor = Color.Red;
+                dvg_motus.CurrentCell.Style.SelectionForeColor = Color.White;
+            }
+        }
+
+        private void Effacer(int x, int y)
+        {
+            if (notes)
+            {
+                sudoku.EffacerNote(x, y);
+            }
+            else
+            {
+                sudoku.Effacer(x, y);
+                dvg_motus.CurrentCell.Style.SelectionBackColor = couleurSelection;
+                dvg_motus.CurrentCell.Style.SelectionForeColor = Color.Black;
+            }
+        }
+
+        private void Bts_nb_click(object sender, EventArgs e)
+        {
+            Button btn = (Button)sender;
+            Placer(Int16.Parse(btn.Text.ToString()),dvg_motus.CurrentCell.ColumnIndex,dvg_motus.CurrentCell.RowIndex);
+            AfficherGrille();
+        }
+
+        private void Bt_effacer_Click(object sender, EventArgs e)
+        {
+            Effacer(dvg_motus.CurrentCell.ColumnIndex, dvg_motus.CurrentCell.RowIndex);
+            AfficherGrille();
         }
     }
 }

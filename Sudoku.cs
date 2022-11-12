@@ -129,7 +129,7 @@ namespace Sodoku
             return true;
         }
 
-        private bool controleInterieurCarre(int[,] grille,  int valeur, int x, int y)
+        private bool controleInterieurCarre(int[,] grille, int valeur, int x, int y)
         {
             int colonneAbsolue = (x / 3) * 3;
             int ligneAbsolue = (y / 3) * 3;
@@ -139,38 +139,42 @@ namespace Sodoku
                 {
                     if (grille[colonne, ligne] == valeur) return false;
                 }
-            } 
+            }
             return true;
         }
-        public void noter(int v, int x, int y)
+
+        public void EffacerNote(int x, int y)
         {
-            if(v == 0)
+            if (estMort()) return;
+            for (int z = 0; z < 9; z++)
             {
-                for(int z = 0; z < 9; z++)
-                {
-                    grilleNote[x, y, z] = 0;
-                }
-            }
-            else
-            {
-                grilleNote[x, y, v-1] = grilleNote[x, y, v - 1] == 0 ? v : 0;
+                grilleNote[x, y, z] = 0;
             }
         }
-        public bool jouer(int v, int x, int y)
+
+        public void Noter(int v, int x, int y)
+        {
+            if (estMort()) return;
+            grilleNote[x, y, v-1] = grilleNote[x, y, v - 1] == 0 ? v : 0;
+        }
+
+        public void Effacer(int x, int y)
+        {
+            if (estMort()) return;
+            if (!caseEstUnIndice(x, y))
+            {
+                if (caseEstValide(grille[x, y], x, y))
+                {
+                    caseRestante++;
+                }
+                grille[x, y] = 0;
+            }
+        }
+
+        public bool Jouer(int v, int x, int y)
         {
             if (estMort()) return false;
-            if(v == 0)
-            {
-                if (!caseEstUnIndice(x, y))
-                {
-                    if(caseEstValide(grille[x, y], x, y))
-                    {
-                        caseRestante++; 
-                    }
-                    grille[x, y] = 0;
-                }
-                return true;
-            };
+            
             if (grille[x, y] != 0) return true;
             grille[x, y] = v;
             if (!caseEstValide(v, x, y))
@@ -181,8 +185,6 @@ namespace Sodoku
             }
             /*La case joué est bonne*/
             caseRestante--;
-           
-
             return true;
         }
 
@@ -197,7 +199,7 @@ namespace Sodoku
                     //On applique un indice uniquement au cases fause ou non remplise
                     if (caseEstUnIndice(x, y)) continue;
                     if (grille[x, y] == grilleSolution[x, y]) continue;
-                    jouer(grilleSolution[x, y], x, y);
+                    Jouer(grilleSolution[x, y], x, y);
                     indiceRestant--;
                     return (x, y);
                 }
