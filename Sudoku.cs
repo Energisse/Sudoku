@@ -51,7 +51,7 @@ namespace Sodoku
 
         public bool caseEstValide(string v, int x, int y)
         {
-            return grilleSolution[x, y].ToString() != v;
+            return grilleSolution[x, y].ToString() == v;
 
         }
 

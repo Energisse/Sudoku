@@ -16,6 +16,8 @@ namespace Sodoku
 
         private Sudoku sudoku = new Sudoku();
         private static Color colorSelection = Color.FromArgb(255, 170, 203, 255);
+        private int vie = 3;
+
         public Fsodoku()
         {
             InitializeComponent();
@@ -105,10 +107,13 @@ namespace Sodoku
                     }
                 }
             }
+
+            lb_vie.Text = vie.ToString();
         }
 
         private void Start()
         {
+            vie = 3;
             sudoku.genererGrille();
             int[,] grille = sudoku.getGrille();
 
@@ -119,11 +124,13 @@ namespace Sodoku
                     dvg_motus.Rows[y].Cells[x].Value = grille[x, y] != 0 ? "" + grille[x, y] : "";
                 }
             }
-
+            Afficher();
         }
 
         private void Dvg_motus_KeyPress(object sender, KeyPressEventArgs e)
         {
+            //Si la partie est fini
+            if (vie == 0) return;
 
             //Si aucune case n'est selectionnée
             if (dvg_motus.CurrentCell.Selected == false) return;
@@ -155,10 +162,10 @@ namespace Sodoku
             if (dvg_motus.Rows[y].Cells[x].Value.ToString().Equals(""))
             {
                 dvg_motus.Rows[y].Cells[x].Value = e.KeyChar.ToString();
-                if (sudoku.caseEstValide(e.KeyChar.ToString(),x,y))
+                if (!sudoku.caseEstValide(e.KeyChar.ToString(),x,y))
                 {
+                    vie--;
                     dvg_motus.Rows[y].Cells[x].Style.ForeColor = Color.FromArgb(255, 255, 0, 0);
-
                     dvg_motus.CurrentCell.Style.SelectionBackColor = Color.Red;
                     dvg_motus.CurrentCell.Style.SelectionForeColor = Color.White;
                 }
@@ -181,14 +188,9 @@ namespace Sodoku
 
         }
 
-        private void Dvg_motus_CellEnter(object sender, DataGridViewCellEventArgs e)
-        {
-        }
-
         private void Dvg_motus_CurrentCellChanged(object sender, EventArgs e)
         {
             Afficher();
-
         }
 
         private void Bt_rejouer_Click(object sender, EventArgs e)
@@ -196,5 +198,6 @@ namespace Sodoku
             Start();
         }
 
+     
     }
 }
