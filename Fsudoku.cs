@@ -17,6 +17,7 @@ namespace Sodoku
         private Sudoku sudoku = new Sudoku();
         private static Color couleurSelection = Color.FromArgb(255, 170, 203, 255);
         private static Color couleurVoisin = Color.FromArgb(255, 225, 225, 225);
+        private bool notes = false;
 
         public Fsodoku()
         {
@@ -127,7 +128,6 @@ namespace Sodoku
         {
             //Si la partie est fini
             if (sudoku.estMort()) return;
-
             //Si aucune case n'est selectionnée
             if (dvg_motus.CurrentCell.Selected == false) return;
 
@@ -138,19 +138,28 @@ namespace Sodoku
             if ((int)e.KeyChar == 8)
             {
                 //On regarde si la case n'est pas une indication
-                sudoku.jouer(0, x, y);
-                dvg_motus.CurrentCell.Style.SelectionBackColor = couleurSelection;
-                dvg_motus.CurrentCell.Style.SelectionForeColor = Color.Black;
+                if (notes) {
+                    sudoku.noter(0, x, y);
+                }
+                else
+                {
+                    sudoku.jouer(0, x, y);
+                    dvg_motus.CurrentCell.Style.SelectionBackColor = couleurSelection;
+                    dvg_motus.CurrentCell.Style.SelectionForeColor = Color.Black;
+                }
                 AfficherGrille();
                 return;
             }
-            //System.Diagnostics.Debug.WriteLine();
 
             //On prends uniquement les chiffre de 1 a 9
             //Ascii code des nombres [1;9] = [49;57]
             if ((int)e.KeyChar < 49 || (int)e.KeyChar > 57) return;
             dvg_motus.CurrentCell.Value = e.KeyChar.ToString();
-            if (sudoku.jouer((int)e.KeyChar - 48, x, y)){
+            if (notes)
+            {
+                sudoku.noter((int)e.KeyChar - 48, x, y);
+            }
+            else if (sudoku.jouer((int)e.KeyChar - 48, x, y)){
                 dvg_motus.CurrentCell.Style.ForeColor = Color.Blue;
             }
             else
@@ -163,6 +172,21 @@ namespace Sodoku
         }
         private void Dvg_motus_Paint(object sender, PaintEventArgs e)
         {
+            for (int x = 0; x < 9; x ++)
+            {
+                for (int y = 0; y < 9; y ++)
+                {
+                    if (sudoku.grille[x,y] != 0) continue;
+                    for(int z = 0; z < 9; z++)
+                    {
+                        if (sudoku.grilleNote[x,y,z] != 0)
+                        {
+                            e.Graphics.DrawString(sudoku.grilleNote[x, y, z].ToString(), new Font("Arial", 10, FontStyle.Bold), Brushes.Gray, x * 50 + (z % 3) * 16, y * 50 + (z / 3) * 16);
+                        }
+                    }
+                }
+            }
+
             for (int x = 0; x< 9; x+=3)
             {
                 for (int y = 0; y< 9; y+=3)
@@ -226,6 +250,12 @@ namespace Sodoku
             dvg_motus.CurrentCell = dvg_motus.Rows[y].Cells[x];
             dvg_motus.CurrentCell.Style.ForeColor = Color.Blue;
             AfficherGrille();
+        }
+
+        private void Bt_notes_Click(object sender, EventArgs e)
+        {
+            notes = !notes;
+            bt_notes.BackColor = notes ? Color.Blue : Color.White ;
         }
     }
 }

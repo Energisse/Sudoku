@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Fsodoku));
             this.bt_rejouer = new System.Windows.Forms.Button();
             this.pageSetupDialog1 = new System.Windows.Forms.PageSetupDialog();
@@ -40,6 +40,7 @@
             this.bt_indice = new System.Windows.Forms.Button();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.lb_indice = new System.Windows.Forms.Label();
+            this.bt_notes = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dvg_motus)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
@@ -65,14 +66,14 @@
             this.dvg_motus.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.dvg_motus.ColumnHeadersVisible = false;
             this.dvg_motus.Cursor = System.Windows.Forms.Cursors.Default;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F);
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(170)))), ((int)(((byte)(203)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dvg_motus.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F);
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(170)))), ((int)(((byte)(203)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dvg_motus.DefaultCellStyle = dataGridViewCellStyle2;
             this.dvg_motus.EnableHeadersVisualStyles = false;
             this.dvg_motus.Location = new System.Drawing.Point(229, 77);
             this.dvg_motus.MultiSelect = false;
@@ -141,11 +142,22 @@
             this.lb_indice.Text = "3";
             this.lb_indice.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // bt_notes
+            // 
+            this.bt_notes.Image = ((System.Drawing.Image)(resources.GetObject("bt_notes.Image")));
+            this.bt_notes.Location = new System.Drawing.Point(610, 535);
+            this.bt_notes.Name = "bt_notes";
+            this.bt_notes.Size = new System.Drawing.Size(71, 77);
+            this.bt_notes.TabIndex = 7;
+            this.bt_notes.UseVisualStyleBackColor = true;
+            this.bt_notes.Click += new System.EventHandler(this.Bt_notes_Click);
+            // 
             // Fsodoku
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(952, 639);
+            this.Controls.Add(this.bt_notes);
             this.Controls.Add(this.pictureBox2);
             this.Controls.Add(this.bt_indice);
             this.Controls.Add(this.pictureBox1);
@@ -174,6 +186,7 @@
         private System.Windows.Forms.Button bt_indice;
         private System.Windows.Forms.PictureBox pictureBox2;
         private System.Windows.Forms.Label lb_indice;
+        private System.Windows.Forms.Button bt_notes;
     }
 }
 

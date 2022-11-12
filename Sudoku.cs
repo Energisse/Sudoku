@@ -11,7 +11,7 @@ namespace Sodoku
     {
         private int[,] grilleIndice = new int[9, 9];
         public int[,] grille { get; private set; } = new int[9, 9];
-        private int[,,] grilleNote = new int[9, 9, 9];
+        public int[,,] grilleNote { get; private set; } = new int[9, 9, 9];
         public int[,] grilleSolution {  get; private set; } = new int[9, 9];
         public int vieRestante { get; private set; } = 3;
         public int indiceRestant { get; private set; } = 3;
@@ -20,7 +20,7 @@ namespace Sodoku
         public void genererGrille()
         {
             vieRestante = 3;
-            indiceRestant = 3;
+            indiceRestant = 3   ;
             grilleNote = new int[9, 9, 9];
             grilleIndice = new int[9, 9];
             resoudre(grilleSolution);
@@ -142,7 +142,20 @@ namespace Sodoku
             } 
             return true;
         }
-
+        public void noter(int v, int x, int y)
+        {
+            if(v == 0)
+            {
+                for(int z = 0; z < 9; z++)
+                {
+                    grilleNote[x, y, z] = 0;
+                }
+            }
+            else
+            {
+                grilleNote[x, y, v-1] = grilleNote[x, y, v - 1] == 0 ? v : 0;
+            }
+        }
         public bool jouer(int v, int x, int y)
         {
             if (estMort()) return false;
