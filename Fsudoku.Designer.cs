@@ -51,6 +51,7 @@
             this.bt_nb_8 = new System.Windows.Forms.Button();
             this.bt_nb_7 = new System.Windows.Forms.Button();
             this.bt_effacer = new System.Windows.Forms.Button();
+            this.timerLb = new Sodoku.Composants.TimerLabel();
             ((System.ComponentModel.ISupportInitialize)(this.dvg_motus)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
@@ -58,6 +59,8 @@
             // 
             // bt_rejouer
             // 
+            this.bt_rejouer.FlatAppearance.BorderSize = 0;
+            this.bt_rejouer.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.bt_rejouer.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bt_rejouer.Image = ((System.Drawing.Image)(resources.GetObject("bt_rejouer.Image")));
             this.bt_rejouer.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -128,12 +131,15 @@
             // 
             // bt_indice
             // 
+            this.bt_indice.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control;
+            this.bt_indice.FlatAppearance.BorderSize = 0;
+            this.bt_indice.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.bt_indice.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bt_indice.Image = ((System.Drawing.Image)(resources.GetObject("bt_indice.Image")));
             this.bt_indice.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.bt_indice.Location = new System.Drawing.Point(583, 550);
+            this.bt_indice.Location = new System.Drawing.Point(573, 550);
             this.bt_indice.Name = "bt_indice";
-            this.bt_indice.Size = new System.Drawing.Size(96, 55);
+            this.bt_indice.Size = new System.Drawing.Size(106, 55);
             this.bt_indice.TabIndex = 4;
             this.bt_indice.Text = "Indice";
             this.bt_indice.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -162,6 +168,8 @@
             // 
             // bt_notes
             // 
+            this.bt_notes.FlatAppearance.BorderSize = 0;
+            this.bt_notes.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.bt_notes.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bt_notes.Image = ((System.Drawing.Image)(resources.GetObject("bt_notes.Image")));
             this.bt_notes.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -279,6 +287,7 @@
             this.bt_effacer.BackColor = System.Drawing.Color.Transparent;
             this.bt_effacer.Cursor = System.Windows.Forms.Cursors.Default;
             this.bt_effacer.FlatAppearance.BorderSize = 0;
+            this.bt_effacer.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.bt_effacer.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bt_effacer.Image = ((System.Drawing.Image)(resources.GetObject("bt_effacer.Image")));
             this.bt_effacer.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -291,6 +300,17 @@
             this.bt_effacer.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.bt_effacer.UseVisualStyleBackColor = false;
             this.bt_effacer.Click += new System.EventHandler(this.Bt_effacer_Click);
+            // 
+            // timerLb
+            // 
+            this.timerLb.BackColor = System.Drawing.SystemColors.Control;
+            this.timerLb.Font = new System.Drawing.Font("Microsoft Sans Serif", 26F);
+            this.timerLb.Location = new System.Drawing.Point(229, 24);
+            this.timerLb.Name = "timerLb";
+            this.timerLb.Size = new System.Drawing.Size(452, 50);
+            this.timerLb.TabIndex = 19;
+            this.timerLb.Text = "00:00";
+            this.timerLb.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             // 
             // Fsodoku
             // 
@@ -315,6 +335,7 @@
             this.Controls.Add(this.bt_rejouer);
             this.Controls.Add(this.lb_vie);
             this.Controls.Add(this.lb_indice);
+            this.Controls.Add(this.timerLb);
             this.Name = "Fsodoku";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.WindowsSodoku_Load);
@@ -347,6 +368,7 @@
         private System.Windows.Forms.Button bt_nb_7;
         private System.Windows.Forms.Button bt_nb_3;
         private System.Windows.Forms.Button bt_effacer;
+        private Composants.TimerLabel timerLb;
     }
 }
 

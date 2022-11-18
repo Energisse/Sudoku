@@ -42,7 +42,9 @@ namespace Sodoku
 
             Afficher();
             Start();
+       
         }
+
         private void Afficher()
         {
             for (int x = 0; x < 9; x++)
@@ -122,6 +124,8 @@ namespace Sodoku
                 }
             }
             AfficherGrille();
+            timerLb.Reset();
+            timerLb.Start();
         }
 
         private void Dvg_motus_KeyPress(object sender, KeyPressEventArgs e)
@@ -190,6 +194,7 @@ namespace Sodoku
         {
             if (sudoku.estMort())
             {
+                timerLb.Stop();
                 MessageBox.Show("Et c'est perdu", "Perdu");
                 for (int x = 0; x < 9; x++)
                 {
@@ -205,6 +210,7 @@ namespace Sodoku
             }
             else if (sudoku.aGagne())
             {
+                timerLb.Stop();
                 MessageBox.Show("Et c'est gagné", "Gagné");
             }
             else
@@ -282,5 +288,6 @@ namespace Sodoku
             Effacer(dvg_motus.CurrentCell.ColumnIndex, dvg_motus.CurrentCell.RowIndex);
             AfficherGrille();
         }
+
     }
 }
