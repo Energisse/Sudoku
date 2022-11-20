@@ -16,7 +16,7 @@ namespace Sodoku
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Fsodoku());
+            Application.Run(new FMenu());
         }
     }
 }

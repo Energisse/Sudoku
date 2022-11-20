@@ -13,44 +13,32 @@ namespace Sodoku
 {
     public partial class Fsodoku : Form
     {
-
-        private Sudoku sudoku = new Sudoku(9);
+        private Sudoku sudoku;
         private static Color couleurSelection = Color.FromArgb(255, 170, 203, 255);
         private static Color couleurVoisin = Color.FromArgb(255, 225, 225, 225);
         private bool notes = false;
-        private int nbrCase = 9;
-        private Control[] btnControls = new Control[25];
-
-        public Fsodoku()
+        private int nbrCase;
+        
+        public Fsodoku(int taille = 9, int vie = 3, int indice = 3)
         {
             InitializeComponent();
-            for(int i = 0; i < 25; i++)
-            {
-                Button bouton = new Button();
-                bouton.Text = (1+i).ToString();
-                bouton.Font = new Font("Microsoft Sans Serif", (i + 1) >= 10 ? 15 : 22,FontStyle.Bold);
-                bouton.Margin = new Padding(3);
-                bouton.Width = 44;
-                bouton.Height = 44;
-                bouton.TextAlign = ContentAlignment.MiddleCenter;
-                bouton.Click += new System.EventHandler(this.Bts_nb_click);
-                btnControls[i] = bouton;
-                
-            }
+            this.nbrCase = taille;
+            this.sudoku = new Sudoku(taille, vie, indice);
         }
+
         private void Init()
         {
-          
+            this.Width = (nbrCase > 9 ? nbrCase :9 )  * 50 + this.Padding.Right + this.Padding.Left;
+            this.Height =  nbrCase * 50 + 250;
             dvg_motus.Width = nbrCase * 50 +2;
             dvg_motus.Height = nbrCase * 50 +2;
-            dvg_motus.Location = new Point(timerLb.Location.X+timerLb.Width/2- dvg_motus.Width/2, dvg_motus.Location.Y);
-            bt_effacer.Location = new Point(bt_effacer.Location.X , dvg_motus.Location.Y + dvg_motus.Height + 10);
-            bt_indice.Location = new Point(bt_indice.Location.X , dvg_motus.Location.Y + dvg_motus.Height + 10);
-            bt_notes.Location = new Point(bt_notes.Location.X , dvg_motus.Location.Y + dvg_motus.Height + 10);
-            bt_rejouer.Location = new Point(bt_rejouer.Location.X , dvg_motus.Location.Y + dvg_motus.Height + 10);
+            dvg_motus.Location = new Point(this.Width/2- dvg_motus.Width/2, dvg_motus.Location.Y);
+            gb_header.Location = new Point(this.Width / 2 - gb_header.Width / 2, gb_header.Location.Y);
+            gb_bts.Location = new Point(this.Width / 2 - gb_bts.Width / 2, dvg_motus.Location.Y + dvg_motus.Height + 10);
+            
             dvg_motus.RowCount = nbrCase;
             dvg_motus.ColumnCount = nbrCase;
-
+         
             for (int x = 0; x < nbrCase; x++)
             {
                 dvg_motus.Columns[x].Width = 50;
@@ -61,17 +49,19 @@ namespace Sodoku
                     dvg_motus.Rows[y].Cells[x].Style = null;
                 }
             }
-            for (int i = 0; i < 25; i++)
+            for (int i = 0; i < this.nbrCase; i++)
             {
-                if (i < nbrCase)
-                {
-                    this.Controls.Add(btnControls[i]);
-                    //3 de padding
-                    btnControls[i].Location = new Point(dvg_motus.Location.X + i * 50 + 3, dvg_motus.Location.Y + nbrCase * 50 + 75);
-                }
-                else this.Controls.Remove(btnControls[i]);
+                Button bouton = new Button();
+                bouton.Text = (1 + i).ToString();
+                bouton.Font = new Font("Microsoft Sans Serif", (i + 1) >= 10 ? 15 : 22, FontStyle.Bold);
+                bouton.Margin = new Padding(3);
+                bouton.Width = 44;
+                bouton.Height = 44;
+                bouton.TextAlign = ContentAlignment.MiddleCenter;
+                bouton.Click += new System.EventHandler(this.Bts_nb_click);
+                bouton.Location = new Point(dvg_motus.Location.X + i * 50 + 3, dvg_motus.Location.Y + nbrCase * 50 + 75);
+                this.Controls.Add(bouton);
             }
-            dvg_motus.CurrentCell.Selected = false;
             this.dvg_motus.CurrentCellChanged += new System.EventHandler(this.Dvg_motus_CurrentCellChanged);
             Afficher();
             Start();
@@ -160,7 +150,6 @@ namespace Sodoku
                 }
 
             }
-            sudoku = new Sudoku(nbrCase, 3, 100);
             AfficherGrille();
             timerLb.Reset();
             timerLb.Start();
@@ -227,6 +216,11 @@ namespace Sodoku
         private void Bt_rejouer_Click(object sender, EventArgs e)
         {
             Start();
+            var frm = new FMenu();
+            frm.Location = this.Location;
+            frm.StartPosition = FormStartPosition.Manual;
+            frm.Show();
+            this.Dispose();
         }
 
         private void AfficherGrille()
@@ -329,12 +323,6 @@ namespace Sodoku
             AfficherGrille();
         }
 
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            this.nbrCase = Int16.Parse(((ComboBox)sender).Text.ToString());
-            System.Diagnostics.Debug.WriteLine(this.nbrCase);
-
-            Init();
-        }
+    
     }
 }

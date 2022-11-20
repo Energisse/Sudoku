@@ -37,6 +37,8 @@ namespace Sodoku
                 if ((int)(taille / a) == (taille / (double)a)) break;
                 a--;
             }
+            System.Diagnostics.Debug.WriteLine(taille);
+
             this.hauteurGroupe = a;
             this.largeurGroupe = taille/ hauteurGroupe;
     
@@ -66,7 +68,7 @@ namespace Sodoku
                     grilleIndice[x, y] = temp;
                 }
                 //Limitation pour accelerer la génération
-                else if (suppresion++ >= taille * taille / 2) break;
+                else if (suppresion++ >= taille ) break;
 
             }
             grille = (int[,])grilleIndice.Clone();
@@ -80,7 +82,7 @@ namespace Sodoku
                     }
                 }
             }
-                
+                    
         }
 
         public bool estMort()
