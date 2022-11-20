@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Fsodoku));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.bt_rejouer = new System.Windows.Forms.Button();
             this.pageSetupDialog1 = new System.Windows.Forms.PageSetupDialog();
             this.dvg_motus = new System.Windows.Forms.DataGridView();
@@ -41,16 +41,8 @@
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.lb_indice = new System.Windows.Forms.Label();
             this.bt_notes = new System.Windows.Forms.Button();
-            this.bt_nb_1 = new System.Windows.Forms.Button();
-            this.bt_nb_2 = new System.Windows.Forms.Button();
-            this.bt_nb_3 = new System.Windows.Forms.Button();
-            this.bt_nb_6 = new System.Windows.Forms.Button();
-            this.bt_nb_5 = new System.Windows.Forms.Button();
-            this.bt_nb_4 = new System.Windows.Forms.Button();
-            this.bt_nb_9 = new System.Windows.Forms.Button();
-            this.bt_nb_8 = new System.Windows.Forms.Button();
-            this.bt_nb_7 = new System.Windows.Forms.Button();
             this.bt_effacer = new System.Windows.Forms.Button();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.timerLb = new Sodoku.Composants.TimerLabel();
             ((System.ComponentModel.ISupportInitialize)(this.dvg_motus)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -64,7 +56,7 @@
             this.bt_rejouer.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bt_rejouer.Image = ((System.Drawing.Image)(resources.GetObject("bt_rejouer.Image")));
             this.bt_rejouer.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.bt_rejouer.Location = new System.Drawing.Point(456, 550);
+            this.bt_rejouer.Location = new System.Drawing.Point(837, 544);
             this.bt_rejouer.Name = "bt_rejouer";
             this.bt_rejouer.Size = new System.Drawing.Size(111, 55);
             this.bt_rejouer.TabIndex = 1;
@@ -83,16 +75,16 @@
             this.dvg_motus.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.dvg_motus.ColumnHeadersVisible = false;
             this.dvg_motus.Cursor = System.Windows.Forms.Cursors.Default;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F);
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(170)))), ((int)(((byte)(203)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dvg_motus.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F);
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(170)))), ((int)(((byte)(203)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dvg_motus.DefaultCellStyle = dataGridViewCellStyle1;
             this.dvg_motus.EnableHeadersVisualStyles = false;
-            this.dvg_motus.Location = new System.Drawing.Point(229, 77);
+            this.dvg_motus.Location = new System.Drawing.Point(608, 86);
             this.dvg_motus.MultiSelect = false;
             this.dvg_motus.Name = "dvg_motus";
             this.dvg_motus.ReadOnly = true;
@@ -112,7 +104,7 @@
             // pictureBox1
             // 
             this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(633, 27);
+            this.pictureBox1.Location = new System.Drawing.Point(1012, 36);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(48, 44);
             this.pictureBox1.TabIndex = 2;
@@ -121,7 +113,7 @@
             // lb_vie
             // 
             this.lb_vie.Font = new System.Drawing.Font("Microsoft Sans Serif", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lb_vie.Location = new System.Drawing.Point(530, 19);
+            this.lb_vie.Location = new System.Drawing.Point(909, 28);
             this.lb_vie.Margin = new System.Windows.Forms.Padding(0);
             this.lb_vie.Name = "lb_vie";
             this.lb_vie.Size = new System.Drawing.Size(100, 55);
@@ -137,7 +129,7 @@
             this.bt_indice.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bt_indice.Image = ((System.Drawing.Image)(resources.GetObject("bt_indice.Image")));
             this.bt_indice.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.bt_indice.Location = new System.Drawing.Point(573, 550);
+            this.bt_indice.Location = new System.Drawing.Point(954, 544);
             this.bt_indice.Name = "bt_indice";
             this.bt_indice.Size = new System.Drawing.Size(106, 55);
             this.bt_indice.TabIndex = 4;
@@ -149,7 +141,7 @@
             // pictureBox2
             // 
             this.pictureBox2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox2.Image")));
-            this.pictureBox2.Location = new System.Drawing.Point(229, 24);
+            this.pictureBox2.Location = new System.Drawing.Point(608, 33);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(48, 50);
             this.pictureBox2.TabIndex = 5;
@@ -158,7 +150,7 @@
             // lb_indice
             // 
             this.lb_indice.Font = new System.Drawing.Font("Microsoft Sans Serif", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lb_indice.Location = new System.Drawing.Point(270, 19);
+            this.lb_indice.Location = new System.Drawing.Point(649, 28);
             this.lb_indice.Margin = new System.Windows.Forms.Padding(0);
             this.lb_indice.Name = "lb_indice";
             this.lb_indice.Size = new System.Drawing.Size(100, 55);
@@ -173,7 +165,7 @@
             this.bt_notes.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bt_notes.Image = ((System.Drawing.Image)(resources.GetObject("bt_notes.Image")));
             this.bt_notes.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.bt_notes.Location = new System.Drawing.Point(352, 550);
+            this.bt_notes.Location = new System.Drawing.Point(733, 544);
             this.bt_notes.Margin = new System.Windows.Forms.Padding(0);
             this.bt_notes.Name = "bt_notes";
             this.bt_notes.Size = new System.Drawing.Size(91, 55);
@@ -182,105 +174,6 @@
             this.bt_notes.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.bt_notes.UseVisualStyleBackColor = true;
             this.bt_notes.Click += new System.EventHandler(this.Bt_notes_Click);
-            // 
-            // bt_nb_1
-            // 
-            this.bt_nb_1.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bt_nb_1.Location = new System.Drawing.Point(229, 625);
-            this.bt_nb_1.Name = "bt_nb_1";
-            this.bt_nb_1.Size = new System.Drawing.Size(44, 44);
-            this.bt_nb_1.TabIndex = 9;
-            this.bt_nb_1.Text = "1";
-            this.bt_nb_1.UseVisualStyleBackColor = true;
-            this.bt_nb_1.Click += new System.EventHandler(this.Bts_nb_click);
-            // 
-            // bt_nb_2
-            // 
-            this.bt_nb_2.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bt_nb_2.Location = new System.Drawing.Point(279, 625);
-            this.bt_nb_2.Name = "bt_nb_2";
-            this.bt_nb_2.Size = new System.Drawing.Size(44, 44);
-            this.bt_nb_2.TabIndex = 10;
-            this.bt_nb_2.Text = "2";
-            this.bt_nb_2.UseVisualStyleBackColor = true;
-            this.bt_nb_2.Click += new System.EventHandler(this.Bts_nb_click);
-            // 
-            // bt_nb_3
-            // 
-            this.bt_nb_3.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bt_nb_3.Location = new System.Drawing.Point(330, 625);
-            this.bt_nb_3.Name = "bt_nb_3";
-            this.bt_nb_3.Size = new System.Drawing.Size(44, 44);
-            this.bt_nb_3.TabIndex = 11;
-            this.bt_nb_3.Text = "3";
-            this.bt_nb_3.UseVisualStyleBackColor = true;
-            this.bt_nb_3.Click += new System.EventHandler(this.Bts_nb_click);
-            // 
-            // bt_nb_6
-            // 
-            this.bt_nb_6.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bt_nb_6.Location = new System.Drawing.Point(483, 625);
-            this.bt_nb_6.Name = "bt_nb_6";
-            this.bt_nb_6.Size = new System.Drawing.Size(44, 44);
-            this.bt_nb_6.TabIndex = 14;
-            this.bt_nb_6.Text = "6";
-            this.bt_nb_6.UseVisualStyleBackColor = true;
-            this.bt_nb_6.Click += new System.EventHandler(this.Bts_nb_click);
-            // 
-            // bt_nb_5
-            // 
-            this.bt_nb_5.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bt_nb_5.Location = new System.Drawing.Point(432, 625);
-            this.bt_nb_5.Name = "bt_nb_5";
-            this.bt_nb_5.Size = new System.Drawing.Size(44, 44);
-            this.bt_nb_5.TabIndex = 13;
-            this.bt_nb_5.Text = "5";
-            this.bt_nb_5.UseVisualStyleBackColor = true;
-            this.bt_nb_5.Click += new System.EventHandler(this.Bts_nb_click);
-            // 
-            // bt_nb_4
-            // 
-            this.bt_nb_4.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bt_nb_4.Location = new System.Drawing.Point(381, 625);
-            this.bt_nb_4.Name = "bt_nb_4";
-            this.bt_nb_4.Size = new System.Drawing.Size(44, 44);
-            this.bt_nb_4.TabIndex = 12;
-            this.bt_nb_4.Text = "4";
-            this.bt_nb_4.UseVisualStyleBackColor = true;
-            this.bt_nb_4.Click += new System.EventHandler(this.Bts_nb_click);
-            // 
-            // bt_nb_9
-            // 
-            this.bt_nb_9.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bt_nb_9.Location = new System.Drawing.Point(635, 625);
-            this.bt_nb_9.Name = "bt_nb_9";
-            this.bt_nb_9.Size = new System.Drawing.Size(44, 44);
-            this.bt_nb_9.TabIndex = 17;
-            this.bt_nb_9.Text = "9";
-            this.bt_nb_9.UseVisualStyleBackColor = true;
-            this.bt_nb_9.Click += new System.EventHandler(this.Bts_nb_click);
-            // 
-            // bt_nb_8
-            // 
-            this.bt_nb_8.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bt_nb_8.Location = new System.Drawing.Point(585, 625);
-            this.bt_nb_8.Name = "bt_nb_8";
-            this.bt_nb_8.Size = new System.Drawing.Size(44, 44);
-            this.bt_nb_8.TabIndex = 16;
-            this.bt_nb_8.Text = "8";
-            this.bt_nb_8.UseVisualStyleBackColor = true;
-            this.bt_nb_8.Click += new System.EventHandler(this.Bts_nb_click);
-            // 
-            // bt_nb_7
-            // 
-            this.bt_nb_7.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bt_nb_7.Location = new System.Drawing.Point(534, 625);
-            this.bt_nb_7.Name = "bt_nb_7";
-            this.bt_nb_7.Size = new System.Drawing.Size(44, 44);
-            this.bt_nb_7.TabIndex = 15;
-            this.bt_nb_7.Text = "7";
-            this.bt_nb_7.UseVisualStyleBackColor = true;
-            this.bt_nb_7.Click += new System.EventHandler(this.Bts_nb_click);
             // 
             // bt_effacer
             // 
@@ -291,7 +184,7 @@
             this.bt_effacer.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bt_effacer.Image = ((System.Drawing.Image)(resources.GetObject("bt_effacer.Image")));
             this.bt_effacer.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.bt_effacer.Location = new System.Drawing.Point(229, 550);
+            this.bt_effacer.Location = new System.Drawing.Point(610, 544);
             this.bt_effacer.Margin = new System.Windows.Forms.Padding(0);
             this.bt_effacer.Name = "bt_effacer";
             this.bt_effacer.Size = new System.Drawing.Size(114, 55);
@@ -301,11 +194,37 @@
             this.bt_effacer.UseVisualStyleBackColor = false;
             this.bt_effacer.Click += new System.EventHandler(this.Bt_effacer_Click);
             // 
+            // comboBox1
+            // 
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Items.AddRange(new object[] {
+            "4",
+            "6",
+            "8",
+            "9",
+            "10",
+            "12",
+            "14",
+            "15",
+            "16",
+            "18",
+            "19",
+            "20",
+            "21",
+            "22",
+            "24",
+            "25"});
+            this.comboBox1.Location = new System.Drawing.Point(1098, 58);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(121, 21);
+            this.comboBox1.TabIndex = 21;
+            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            // 
             // timerLb
             // 
             this.timerLb.BackColor = System.Drawing.SystemColors.Control;
             this.timerLb.Font = new System.Drawing.Font("Microsoft Sans Serif", 26F);
-            this.timerLb.Location = new System.Drawing.Point(229, 24);
+            this.timerLb.Location = new System.Drawing.Point(608, 33);
             this.timerLb.Name = "timerLb";
             this.timerLb.Size = new System.Drawing.Size(452, 50);
             this.timerLb.TabIndex = 19;
@@ -316,17 +235,9 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(952, 704);
+            this.ClientSize = new System.Drawing.Size(2087, 704);
+            this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.bt_effacer);
-            this.Controls.Add(this.bt_nb_9);
-            this.Controls.Add(this.bt_nb_8);
-            this.Controls.Add(this.bt_nb_7);
-            this.Controls.Add(this.bt_nb_6);
-            this.Controls.Add(this.bt_nb_5);
-            this.Controls.Add(this.bt_nb_4);
-            this.Controls.Add(this.bt_nb_3);
-            this.Controls.Add(this.bt_nb_2);
-            this.Controls.Add(this.bt_nb_1);
             this.Controls.Add(this.bt_notes);
             this.Controls.Add(this.pictureBox2);
             this.Controls.Add(this.bt_indice);
@@ -358,17 +269,9 @@
         private System.Windows.Forms.PictureBox pictureBox2;
         private System.Windows.Forms.Label lb_indice;
         private System.Windows.Forms.Button bt_notes;
-        private System.Windows.Forms.Button bt_nb_1;
-        private System.Windows.Forms.Button bt_nb_2;
-        private System.Windows.Forms.Button bt_nb_6;
-        private System.Windows.Forms.Button bt_nb_5;
-        private System.Windows.Forms.Button bt_nb_4;
-        private System.Windows.Forms.Button bt_nb_9;
-        private System.Windows.Forms.Button bt_nb_8;
-        private System.Windows.Forms.Button bt_nb_7;
-        private System.Windows.Forms.Button bt_nb_3;
         private System.Windows.Forms.Button bt_effacer;
         private Composants.TimerLabel timerLb;
+        private System.Windows.Forms.ComboBox comboBox1;
     }
 }
 

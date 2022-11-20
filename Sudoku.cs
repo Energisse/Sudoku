@@ -1,37 +1,62 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Printing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Windows.Forms.LinkLabel;
 
 namespace Sodoku
 {
     internal class Sudoku
     {
-        private int[,] grilleIndice = new int[9, 9];
-        public int[,] grille { get; private set; } = new int[9, 9];
-        public int[,,] grilleNote { get; private set; } = new int[9, 9, 9];
-        public int[,] grilleSolution {  get; private set; } = new int[9, 9];
-        public int vieRestante { get; private set; } = 3;
-        public int indiceRestant { get; private set; } = 3;
-        private int caseRestante  = 81;
+        public int taille { get; private set; }
+        //Largeur du groupe ex : Une grille 9*9 a 9 groupes de 3*3 de largeur 3, une grille 12*12 a 12 groupes de 4*3 de largeur 4
+        public int largeurGroupe { get; private set; }
+        //Hauteur du groupe ex : Une grille 9*9 a 9 groupes de 3*3 de hauteur 3, une grille 12*12 a 12 groupes de 4*3 de hauteur 3
+        public int hauteurGroupe { get; private set; }
+        private int[,] grilleIndice;
+        public int[,] grille { get; private set; }
+        public int[,,] grilleNote { get; private set; }
+        public int[,] grilleSolution {  get; private set; }
+        public int vieRestante { get; private set; } 
+        public int indiceRestant { get; private set; } 
 
-        public void genererGrille()
+        private int caseRestante;
+
+        public Sudoku(int taille = 9, int vie = 3, int indice = 3)
         {
-            vieRestante = 3;
-            indiceRestant = 3   ;
-            grilleNote = new int[9, 9, 9];
-            grilleIndice = new int[9, 9];
-            resoudre(grilleSolution);
-            grilleIndice = (int[,])grilleSolution.Clone();
-            caseRestante = 81;
-            //AMERLIORER LA SUPPRESSION DES CHIFFRES
-            foreach (int i in suiteAleatoire(0,80))
+            this.taille = taille;
+            this.caseRestante = taille * taille;
+
+            int a = (int)Math.Truncate(Math.Sqrt(taille));
+
+            while(a > 0)
             {
-                int x = i % 9;
-                int y = i / 9;
-                System.Diagnostics.Debug.WriteLine(x +" " + y);
+                if ((int)(taille / a) == (taille / (double)a)) break;
+                a--;
+            }
+            this.hauteurGroupe = a;
+            this.largeurGroupe = taille/ hauteurGroupe;
+    
+            this.vieRestante = vie;
+            this.indiceRestant = indice;
+            grilleNote = new int[taille, taille, taille];
+            
+            //Création de la grille a partir d'une grille vide
+            grilleSolution = new int[taille, taille];
+            resoudre(grilleSolution);
+            
+            //Création de la grille des indices
+            grilleIndice = (int[,])grilleSolution.Clone();
+
+            int suppresion = 0;
+            //AMERLIORER LA SUPPRESSION DES CHIFFRES
+            foreach (int i in suiteAleatoire(0, taille*taille))
+            {
+                int x = i % taille;
+                int y = i / taille;
                 int temp = grilleIndice[x, y];
                 grilleIndice[x, y] = 0;
                 int[,] copie = (int[,])grilleIndice.Clone();
@@ -40,20 +65,24 @@ namespace Sodoku
                 {
                     grilleIndice[x, y] = temp;
                 }
+                //Limitation pour accelerer la génération
+                else if (suppresion++ >= taille * taille / 2) break;
+
             }
             grille = (int[,])grilleIndice.Clone();
-            for(int x = 0; x < 9; x++)
+            for (int x = 0; x < taille; x++)
             {
-                for (int y = 0; y < 9; y++)
+                for (int y = 0; y < taille; y++)
                 {
-                    if (grille[x,y] != 0)
+                    if (grille[x, y] != 0)
                     {
                         caseRestante--;
                     }
                 }
             }
+                
         }
-        
+
         public bool estMort()
         {
             return vieRestante == 0;
@@ -73,13 +102,12 @@ namespace Sodoku
         {
             return grilleSolution[x, y] == v;
         }
-
         public bool resoudre(int[,] grille, int x = 0, int y = 0)
         {
-            if (y == 9) return true;
-            if (x == 9) return resoudre(grille, 0, y + 1);
+            if (y == taille) return true;
+            if (x == taille) return resoudre(grille, 0, y + 1);
             if (grille[x, y] != 0) return resoudre(grille, x + 1, y);
-            foreach (int i in suiteAleatoire(1, 10))
+            foreach (int i in suiteAleatoire(0,taille+1))
             {
                 if (nestPasDansLaLigne(grille,i, x, y) && nestPasDansLaColonne(grille,i, x, y) && controleInterieurCarre(grille,i, x, y))
                 {
@@ -93,12 +121,12 @@ namespace Sodoku
 
         private int resoudreCompteur(int[,] grille, int x, int y)
         {
-            if (y == 9) return 1;
-            if (x == 9) return resoudreCompteur(grille, 0, y + 1);
+            if (y == taille) return 1;
+            if (x == taille) return resoudreCompteur(grille, 0, y + 1);
             if (grille[x, y] != 0) return resoudreCompteur(grille, x + 1, y);
             int possibilite = 0;
 
-            foreach (int i in suiteAleatoire(1,10))
+            foreach (int i in suiteAleatoire(1, taille+1))
             {
                 if (nestPasDansLaLigne(grille,i, x, y) && nestPasDansLaColonne(grille,i, x, y) && controleInterieurCarre(grille,i, x, y))
                 {
@@ -113,7 +141,7 @@ namespace Sodoku
 
         private bool nestPasDansLaLigne(int[,] grille, int valeur, int x, int y)
         {
-            for (int i = 0; i < 9; i++)
+            for (int i = 0; i < taille; i++)
             {
                 if (grille[i, y] == valeur) return false;
             }
@@ -122,7 +150,7 @@ namespace Sodoku
 
         private bool nestPasDansLaColonne(int[,] grille, int valeur, int x, int y)
         {
-            for (int i = 0; i < 9; i++)
+            for (int i = 0; i < taille; i++)
             {
                 if (grille[x, i] == valeur) return false;
             }
@@ -131,11 +159,12 @@ namespace Sodoku
 
         private bool controleInterieurCarre(int[,] grille, int valeur, int x, int y)
         {
-            int colonneAbsolue = (x / 3) * 3;
-            int ligneAbsolue = (y / 3) * 3;
-            for (int colonne = colonneAbsolue; colonne < colonneAbsolue + 3; colonne++)
+
+            int colonneAbsolue = (x / this.largeurGroupe) * this.largeurGroupe;
+            int ligneAbsolue = (y / this.hauteurGroupe) * this.hauteurGroupe;
+            for (int colonne = colonneAbsolue; colonne < colonneAbsolue + this.largeurGroupe; colonne++)
             {
-                for (int ligne = ligneAbsolue; ligne < ligneAbsolue + 3; ligne++)
+                for (int ligne = ligneAbsolue; ligne < ligneAbsolue + this.hauteurGroupe; ligne++)
                 {
                     if (grille[colonne, ligne] == valeur) return false;
                 }
@@ -146,7 +175,7 @@ namespace Sodoku
         public void EffacerNote(int x, int y)
         {
             if (estMort()) return;
-            for (int z = 0; z < 9; z++)
+            for (int z = 0; z < taille; z++)
             {
                 grilleNote[x, y, z] = 0;
             }
@@ -192,9 +221,9 @@ namespace Sodoku
         {
             if (indiceRestant == 0 || vieRestante == 0) return (-1, -1);
             //On parcours le tableau de facon aléatoire
-            foreach (int x in suiteAleatoire(0,9))
+            foreach (int x in suiteAleatoire(0, taille))
             {
-                foreach (int y in suiteAleatoire(0, 9))
+                foreach (int y in suiteAleatoire(0, taille))
                 {
                     //On applique un indice uniquement au cases fause ou non remplise
                     if (caseEstUnIndice(x, y)) continue;
