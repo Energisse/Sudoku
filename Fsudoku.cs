@@ -181,6 +181,7 @@ namespace Sodoku
         }
         private void Dvg_motus_Paint(object sender, PaintEventArgs e)
         {
+            int police = this.sudoku.largeurGroupe > this.sudoku.hauteurGroupe ? 30 / this.sudoku.largeurGroupe : 30 / this.sudoku.hauteurGroupe;
             for (int x = 0; x < nbrCase; x ++)
             {
                 for (int y = 0; y < nbrCase; y ++)
@@ -190,7 +191,7 @@ namespace Sodoku
                     {
                         if (sudoku.grilleNote[x,y,z] != 0)
                         {
-                            e.Graphics.DrawString(sudoku.grilleNote[x, y, z].ToString(), new Font("Arial", 10, FontStyle.Bold), Brushes.Gray, x * 50 + (z % nbrCase) * 16, y * 50 + (z / nbrCase) * 16);
+                            e.Graphics.DrawString(sudoku.grilleNote[x, y, z].ToString(), new Font("Arial", police, FontStyle.Bold), Brushes.Gray, x * 50 + (z % this.sudoku.largeurGroupe) * 50 / this.sudoku.largeurGroupe, y * 50 + (z / this.sudoku.largeurGroupe) * 50 / this.sudoku.largeurGroupe);
                         }
                     }
                 }
