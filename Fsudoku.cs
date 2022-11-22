@@ -18,12 +18,11 @@ namespace Sodoku
         private static Color couleurVoisin = Color.FromArgb(255, 225, 225, 225);
         private bool notes = false;
         private int nbrCase;
-        
-        public Fsodoku(int taille = 9, int vie = 3, int indice = 3)
+        public Fsodoku(int taille = 9, Difficulte niveau = Difficulte.Facile, int vie = 3, int indice = 3)
         {
             InitializeComponent();
             this.nbrCase = taille;
-            this.sudoku = new Sudoku(taille, vie, indice);
+            this.sudoku = new Sudoku(taille, niveau, vie, indice);
         }
 
         private void Init()

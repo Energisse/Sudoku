@@ -1,14 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.Drawing;
 using System.Drawing.Printing;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using static System.Windows.Forms.LinkLabel;
 
 namespace Sodoku
 {
+
+    public enum Difficulte : int
+    {
+        Facile = 4,
+        Moyen = 3,
+        Difficile = 2,
+        Extreme = 1
+    }
     internal class Sudoku
     {
         public int taille { get; private set; }
@@ -24,11 +35,13 @@ namespace Sodoku
         public int indiceRestant { get; private set; } 
 
         private int caseRestante;
+        private int niveau;
 
-        public Sudoku(int taille = 9, int vie = 3, int indice = 3)
+        public Sudoku(int taille = 9, Difficulte niveau = Difficulte.Facile, int vie = 3, int indice = 3)
         {
             this.taille = taille;
             this.caseRestante = taille * taille;
+            this.niveau = (int)niveau;
 
             int a = (int)Math.Truncate(Math.Sqrt(taille));
 
@@ -49,11 +62,12 @@ namespace Sodoku
             //Création de la grille a partir d'une grille vide
             grilleSolution = new int[taille, taille];
             resoudre(grilleSolution);
-            
+        
             //Création de la grille des indices
             grilleIndice = (int[,])grilleSolution.Clone();
 
             int suppresion = 0;
+            int iteration = 0;
             //AMERLIORER LA SUPPRESSION DES CHIFFRES
             foreach (int i in suiteAleatoire(0, taille*taille))
             {
@@ -68,7 +82,13 @@ namespace Sodoku
                     grilleIndice[x, y] = temp;
                 }
                 //Limitation pour accelerer la génération
-                else if (suppresion++ >= taille ) break;
+                else if (suppresion++ >= taille* taille/ this.niveau)
+                {
+                    System.Diagnostics.Debug.WriteLine("fin");
+
+                    break;
+                };
+                System.Diagnostics.Debug.WriteLine(suppresion + " " + ((double)iteration++ / ((double)taille * taille))*100 + "%");
 
             }
             grille = (int[,])grilleIndice.Clone();
@@ -82,7 +102,7 @@ namespace Sodoku
                     }
                 }
             }
-                    
+
         }
 
         public bool estMort()
@@ -109,7 +129,7 @@ namespace Sodoku
             if (y == taille) return true;
             if (x == taille) return resoudre(grille, 0, y + 1);
             if (grille[x, y] != 0) return resoudre(grille, x + 1, y);
-            foreach (int i in suiteAleatoire(0,taille+1))
+            for (int i = 1; i <= taille; i++)
             {
                 if (nestPasDansLaLigne(grille,i, x, y) && nestPasDansLaColonne(grille,i, x, y) && controleInterieurCarre(grille,i, x, y))
                 {
@@ -128,7 +148,7 @@ namespace Sodoku
             if (grille[x, y] != 0) return resoudreCompteur(grille, x + 1, y);
             int possibilite = 0;
 
-            foreach (int i in suiteAleatoire(1, taille+1))
+            for (int i = 1; i <= taille; i++)
             {
                 if (nestPasDansLaLigne(grille,i, x, y) && nestPasDansLaColonne(grille,i, x, y) && controleInterieurCarre(grille,i, x, y))
                 {

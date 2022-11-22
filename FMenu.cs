@@ -19,7 +19,20 @@ namespace Sodoku
 
         private void bt_jouer_Click(object sender, EventArgs e)
         {
-            var frm = new Fsodoku(Int16.Parse(cb_taille.Text.ToString()));
+            Difficulte difficulte = Difficulte.Facile;
+            switch (cb_niveau.Text.ToString())
+            {
+                case "Extreme":
+                    difficulte = Difficulte.Extreme;
+                    break;
+                case "Difficile":
+                    difficulte = Difficulte.Difficile;
+                    break;
+                case "Moyen":
+                    difficulte = Difficulte.Moyen;
+                    break;
+            }
+            var frm = new Fsodoku(Int16.Parse(cb_taille.Text.ToString()), difficulte);
             frm.Location = this.Location;
             frm.StartPosition = FormStartPosition.Manual;
             frm.FormClosing += delegate { this.Show(); };
