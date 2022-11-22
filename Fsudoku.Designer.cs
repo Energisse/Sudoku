@@ -102,7 +102,10 @@
             this.dvg_motus.ShowRowErrors = false;
             this.dvg_motus.Size = new System.Drawing.Size(452, 452);
             this.dvg_motus.TabIndex = 0;
+            this.dvg_motus.TabStop = false;
+            this.dvg_motus.SelectionChanged += new System.EventHandler(this.dvg_motus_SelectionChanged);
             this.dvg_motus.Paint += new System.Windows.Forms.PaintEventHandler(this.Dvg_motus_Paint);
+            this.dvg_motus.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dvg_motus_KeyDown);
             this.dvg_motus.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Dvg_motus_KeyPress);
             // 
             // pictureBox1

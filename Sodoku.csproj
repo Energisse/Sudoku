@@ -46,6 +46,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Composants\Tableau.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Composants\TimerLabel.cs">
       <SubType>Component</SubType>
     </Compile>

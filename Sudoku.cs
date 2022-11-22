@@ -225,7 +225,8 @@ namespace Sodoku
         public bool Jouer(int v, int x, int y)
         {
             if (estMort()) return false;
-            
+            System.Diagnostics.Debug.WriteLine(grille[x, y] + " " + x + " " + y + " " + v);
+
             if (grille[x, y] != 0) return true;
             grille[x, y] = v;
             if (!caseEstValide(v, x, y))

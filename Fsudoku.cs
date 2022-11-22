@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing.Drawing2D;
+using System.CodeDom;
 
 namespace Sodoku
 {
@@ -18,6 +19,11 @@ namespace Sodoku
         private static Color couleurVoisin = Color.FromArgb(255, 225, 225, 225);
         private bool notes = false;
         private int nbrCase;
+
+        //case courrante où le joueur joue
+        //(contrainte car la grille peut être supperieur a 9x9 donc certains nombres s'ecrivent sur 2 chiffres,
+        //on enregistre la valeur avant de la valider si le curseur est deplacé ou le jouer a appuyé sur "Entrée") [x,y,valeur]
+        private Tuple<int, int, int> caseCourante = null;
         public Fsodoku(int taille = 9, Difficulte niveau = Difficulte.Facile, int vie = 3, int indice = 3)
         {
             InitializeComponent();
@@ -117,8 +123,6 @@ namespace Sodoku
             }
 
             /*COLORIAGE DE TOUTES LES CASES AYANT LE MEME NOMBRE QUE CELUI SELECTIONNEE*/
-            System.Diagnostics.Debug.WriteLine(posX + " " + posY);
-
             String nombre = dvg_motus.Rows[posY].Cells[posX].Value.ToString();
 
             if (nombre != "")
@@ -153,11 +157,26 @@ namespace Sodoku
             timerLb.Reset();
             timerLb.Start();
         }
+        private void dvg_motus_KeyDown(object sender, KeyEventArgs e)
+        {
+            if ((int)e.KeyCode == 13)
+            {
+                e.Handled = true;
+            }
+            return;
+        }
 
         private void Dvg_motus_KeyPress(object sender, KeyPressEventArgs e)
         {
             //Si la partie est fini
             if (sudoku.estMort()) return;
+
+            if ((int)e.KeyChar == 13)
+            {
+                this.Appliquer_Action();
+                return;
+            }
+
             //Si aucune case n'est selectionnée
             if (dvg_motus.CurrentCell.Selected == false) return;
 
@@ -167,22 +186,26 @@ namespace Sodoku
             //Si effacement de la case
             if ((int)e.KeyChar == 8)
             {
-                Effacer(x,y);
+                caseCourante = null;
+                Effacer(x, y);
                 AfficherGrille();
                 return;
             }
 
-            //On prends uniquement les chiffre de 1 a 9
-            //Ascii code des nombres [1;9] = [49;57]
-            if ((int)e.KeyChar < 49 || (int)e.KeyChar > 57) return;
-            dvg_motus.CurrentCell.Value = e.KeyChar.ToString();
-            Placer((int)e.KeyChar - 48, x, y);
+            //On prends uniquement les chiffre de 0 a 9
+            //Ascii code des nombres [0;9] = [48;57]
+            if ((int)e.KeyChar < 48 || (int)e.KeyChar > 57) return;
+            int valeurCourante = Int16.Parse((caseCourante == null ? "0" : caseCourante.Item3.ToString())+ e.KeyChar);
+            if (valeurCourante <= 0 || valeurCourante > nbrCase) return;
+            caseCourante = new Tuple<int, int, int>(x, y, valeurCourante);
             AfficherGrille();
         }
         private void Dvg_motus_Paint(object sender, PaintEventArgs e)
         {
-            int police = this.sudoku.largeurGroupe > this.sudoku.hauteurGroupe ? 30 / this.sudoku.largeurGroupe : 30 / this.sudoku.hauteurGroupe;
-            for (int x = 0; x < nbrCase; x ++)
+           int largeur = (int)Math.Ceiling(Math.Sqrt(nbrCase));
+           int hauteur = (int)Math.Floor(Math.Sqrt(nbrCase));
+           int police = 30 / largeur;
+           for (int x = 0; x < nbrCase; x ++)
             {
                 for (int y = 0; y < nbrCase; y ++)
                 {
@@ -191,10 +214,19 @@ namespace Sodoku
                     {
                         if (sudoku.grilleNote[x,y,z] != 0)
                         {
-                            e.Graphics.DrawString(sudoku.grilleNote[x, y, z].ToString(), new Font("Arial", police, FontStyle.Bold), Brushes.Gray, x * 50 + (z % this.sudoku.largeurGroupe) * 50 / this.sudoku.largeurGroupe, y * 50 + (z / this.sudoku.largeurGroupe) * 50 / this.sudoku.largeurGroupe);
+                            e.Graphics.DrawString(sudoku.grilleNote[x, y, z].ToString(), new Font("Arial", police, FontStyle.Bold), Brushes.Gray, x * 50 + (z % largeur) * 50 / largeur, y * 50 + (z / largeur) * 50 / largeur);
                         }
                     }
                 }
+            }
+            if (caseCourante != null && notes == true)
+            {
+                System.Diagnostics.Debug.WriteLine(sudoku.grilleNote[caseCourante.Item1, caseCourante.Item2, caseCourante.Item3 - 1]);
+
+                bool effacement = sudoku.grilleNote[caseCourante.Item1, caseCourante.Item2, caseCourante.Item3 - 1] == 1;
+                Brush brush = effacement ? new SolidBrush(couleurSelection): new SolidBrush(Color.Gray);
+                e.Graphics.DrawString(caseCourante.Item3.ToString(), new Font("Arial", police, FontStyle.Bold), brush, caseCourante.Item1 * 50 + ((caseCourante.Item3 - 1) % largeur) * 50 / largeur, caseCourante.Item2 * 50 + ((caseCourante.Item3 - 1) / largeur) * 50 / largeur);
+                
             }
 
             for (int x = 0; x< nbrCase; x+=sudoku.largeurGroupe)
@@ -256,6 +288,11 @@ namespace Sodoku
                         dvg_motus.Rows[y].Cells[x].Value = sudoku.grille[x, y] != 0 ? sudoku.grille[x, y].ToString() : "";
                     }
                 }
+                if (caseCourante != null && notes == false)
+                {
+
+                    dvg_motus.Rows[caseCourante.Item2].Cells[caseCourante.Item1].Value = caseCourante.Item3;
+                }
 
             }
             Afficher();
@@ -273,26 +310,28 @@ namespace Sodoku
 
         private void Bt_notes_Click(object sender, EventArgs e)
         {
+            this.Appliquer_Action();
             notes = !notes;
-            bt_notes.BackColor = notes ? Color.Blue : Color.White ;
+            bt_notes.BackColor = notes ? Color.Blue : Color.White;
         }
 
         private void Placer(int v, int x, int y)
         {
-
             if (notes)
             {
+                System.Diagnostics.Debug.WriteLine("Note " + v + " a " + x + " " + y);
+
                 sudoku.Noter(v, x, y);
             }
             else if (sudoku.Jouer(v, x, y))
             {
-                dvg_motus.CurrentCell.Style.ForeColor = Color.Blue;
+                dvg_motus.Rows[y].Cells[x].Style.ForeColor = Color.Blue;
             }
             else
             {
-                dvg_motus.CurrentCell.Style.ForeColor = Color.Red;
-                dvg_motus.CurrentCell.Style.SelectionBackColor = Color.Red;
-                dvg_motus.CurrentCell.Style.SelectionForeColor = Color.White;
+                dvg_motus.Rows[y].Cells[x].Style.ForeColor = Color.Red;
+                dvg_motus.Rows[y].Cells[x].Style.SelectionBackColor = Color.Red;
+                dvg_motus.Rows[y].Cells[x].Style.SelectionForeColor = Color.White;
             }
         }
 
@@ -323,6 +362,20 @@ namespace Sodoku
             AfficherGrille();
         }
 
-    
+        private void Appliquer_Action()
+        {
+            if (caseCourante == null) return;
+            Placer(caseCourante.Item3, caseCourante.Item1, caseCourante.Item2);
+            caseCourante = null;
+        }
+
+        private void dvg_motus_SelectionChanged(object sender, EventArgs e)
+        {
+            this.Appliquer_Action();
+        }
+
+       
     }
+
+   
 }
