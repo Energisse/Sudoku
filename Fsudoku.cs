@@ -14,11 +14,11 @@ namespace Sodoku
 {
     public partial class Fsodoku : Form
     {
-        private Sudoku sudoku;
-        private static Color couleurSelection = Color.FromArgb(255, 170, 203, 255);
-        private static Color couleurVoisin = Color.FromArgb(255, 225, 225, 225);
-        private bool notes = false;
-        private int nbrCase;
+        private readonly Sudoku Sudoku;
+        private static readonly Color CouleurSelection = Color.FromArgb(255, 170, 203, 255);
+        private static readonly Color CouleurVoisin = Color.FromArgb(255, 225, 225, 225);
+        private readonly int Taille;
+        private bool Notes = false;
 
         //case courrante où le joueur joue
         //(contrainte car la grille peut être supperieur a 9x9 donc certains nombres s'ecrivent sur 2 chiffres,
@@ -27,34 +27,34 @@ namespace Sodoku
         public Fsodoku(int taille = 9, Difficulte niveau = Difficulte.Facile, int vie = 3, int indice = 3)
         {
             InitializeComponent();
-            this.nbrCase = taille;
-            this.sudoku = new Sudoku(taille, niveau, vie, indice);
+            this.Taille = taille;
+            this.Sudoku = new Sudoku(taille, niveau, vie, indice);
         }
 
         private void Init()
         {
-            this.Width = (nbrCase > 9 ? nbrCase :9 )  * 50 + this.Padding.Right + this.Padding.Left;
-            this.Height =  nbrCase * 50 + 250;
-            dvg_motus.Width = nbrCase * 50 +2;
-            dvg_motus.Height = nbrCase * 50 +2;
+            this.Width = (Taille > 9 ? Taille :9 )  * 50 + this.Padding.Right + this.Padding.Left;
+            this.Height =  Taille * 50 + 250;
+            dvg_motus.Width = Taille * 50 +2;
+            dvg_motus.Height = Taille * 50 +2;
             dvg_motus.Location = new Point(this.Width/2- dvg_motus.Width/2, dvg_motus.Location.Y);
             gb_header.Location = new Point(this.Width / 2 - gb_header.Width / 2, gb_header.Location.Y);
             gb_bts.Location = new Point(this.Width / 2 - gb_bts.Width / 2, dvg_motus.Location.Y + dvg_motus.Height + 10);
             
-            dvg_motus.RowCount = nbrCase;
-            dvg_motus.ColumnCount = nbrCase;
+            dvg_motus.RowCount = Taille;
+            dvg_motus.ColumnCount = Taille;
          
-            for (int x = 0; x < nbrCase; x++)
+            for (int x = 0; x < Taille; x++)
             {
                 dvg_motus.Columns[x].Width = 50;
-                for (int y = 0; y < nbrCase; y++)
+                for (int y = 0; y < Taille; y++)
                 {
                     dvg_motus.Rows[y].Height = 50;
                     dvg_motus.Rows[y].Cells[x].Value = "";
                     dvg_motus.Rows[y].Cells[x].Style = null;
                 }
             }
-            for (int i = 0; i < this.nbrCase; i++)
+            for (int i = 0; i < this.Taille; i++)
             {
                 Button bouton = new Button();
                 bouton.Text = (1 + i).ToString();
@@ -64,7 +64,7 @@ namespace Sodoku
                 bouton.Height = 44;
                 bouton.TextAlign = ContentAlignment.MiddleCenter;
                 bouton.Click += new System.EventHandler(this.Bts_nb_click);
-                bouton.Location = new Point(dvg_motus.Location.X + i * 50 + 3, dvg_motus.Location.Y + nbrCase * 50 + 75);
+                bouton.Location = new Point(dvg_motus.Location.X + i * 50 + 3, dvg_motus.Location.Y + Taille * 50 + 75);
                 this.Controls.Add(bouton);
             }
             this.dvg_motus.CurrentCellChanged += new System.EventHandler(this.Dvg_motus_CurrentCellChanged);
@@ -78,9 +78,9 @@ namespace Sodoku
 
         private void Afficher()
         {
-            for (int x = 0; x < nbrCase; x++)
+            for (int x = 0; x < Taille; x++)
             {
-                for (int y = 0; y < nbrCase; y++)
+                for (int y = 0; y < Taille; y++)
                 {
                     dvg_motus.Rows[y].Cells[x].Style.BackColor = Color.White;
                 }
@@ -92,28 +92,28 @@ namespace Sodoku
             int posX = dvg_motus.CurrentCellAddress.X;
             int posY = dvg_motus.CurrentCellAddress.Y;
 
-            if (posY == -1 || posX ==-1 || posY >= nbrCase || posX >= nbrCase) return;
+            if (posY == -1 || posX ==-1 || posY >= Taille || posX >= Taille) return;
 
 
             /*COLORIAGE DES AXES X ET Y DE LA CASE SELECTIONNEE*/
-            for (int i = 0; i < nbrCase; i++)
+            for (int i = 0; i < Taille; i++)
             {
-                dvg_motus.Rows[posY].Cells[i].Style.BackColor = couleurVoisin;
-                dvg_motus.Rows[i].Cells[posX].Style.BackColor = couleurVoisin;
+                dvg_motus.Rows[posY].Cells[i].Style.BackColor = CouleurVoisin;
+                dvg_motus.Rows[i].Cells[posX].Style.BackColor = CouleurVoisin;
             }
 
 
             /*COLORIAGE DU BLOC DE x*x DE LA CASE SELECTIONNEE*/
-            int yAbsolue = (posY / sudoku.hauteurGroupe) * sudoku.hauteurGroupe;
-            int xAbsolue = (posX / sudoku.largeurGroupe) * sudoku.largeurGroupe;
-            for (int x = 0; x < sudoku.largeurGroupe; x++)
+            int yAbsolue = (posY / Sudoku.hauteurGroupe) * Sudoku.hauteurGroupe;
+            int xAbsolue = (posX / Sudoku.LargeurGroupe) * Sudoku.LargeurGroupe;
+            for (int x = 0; x < Sudoku.LargeurGroupe; x++)
             {
-                for (int y = 0; y < sudoku.hauteurGroupe; y++)
+                for (int y = 0; y < Sudoku.hauteurGroupe; y++)
                 {
                     //Utilisation du try pour eviter un bug d'indice lors du changement de taille
                     try
                     {
-                        dvg_motus.Rows[y + yAbsolue].Cells[x + xAbsolue].Style.BackColor = couleurVoisin;
+                        dvg_motus.Rows[y + yAbsolue].Cells[x + xAbsolue].Style.BackColor = CouleurVoisin;
                     }
                     catch (Exception e)
                     {
@@ -127,27 +127,27 @@ namespace Sodoku
 
             if (nombre != "")
             {
-                for (int x = 0; x < nbrCase; x++)
+                for (int x = 0; x < Taille; x++)
                 {
-                    for (int y = 0; y < nbrCase; y++)
+                    for (int y = 0; y < Taille; y++)
                     {
                         if (dvg_motus.Rows[y].Cells[x].Value.ToString().Equals(nombre))
                         {
-                            dvg_motus.Rows[y].Cells[x].Style.BackColor = couleurSelection;
+                            dvg_motus.Rows[y].Cells[x].Style.BackColor = CouleurSelection;
                         }
                     }
                 }
             }
 
-            lb_vie.Text = sudoku.vieRestante.ToString();
-            lb_indice.Text = sudoku.indiceRestant.ToString();
+            lb_vie.Text = Sudoku.VieRestante.ToString();
+            lb_indice.Text = Sudoku.IndiceRestant.ToString();
         }
 
         private void Start()
         {
-            for (int x = 0; x < nbrCase; x++)
+            for (int x = 0; x < Taille; x++)
             {
-                for (int y = 0; y < nbrCase; y++)
+                for (int y = 0; y < Taille; y++)
                 {
                     dvg_motus.Rows[y].Cells[x].Style = null ;
                 }
@@ -157,7 +157,7 @@ namespace Sodoku
             timerLb.Reset();
             timerLb.Start();
         }
-        private void dvg_motus_KeyDown(object sender, KeyEventArgs e)
+        private void Dvg_motus_KeyDown(object sender, KeyEventArgs e)
         {
             if ((int)e.KeyCode == 13)
             {
@@ -169,7 +169,7 @@ namespace Sodoku
         private void Dvg_motus_KeyPress(object sender, KeyPressEventArgs e)
         {
             //Si la partie est fini
-            if (sudoku.estMort()) return;
+            if (Sudoku.EstMort()) return;
 
             if ((int)e.KeyChar == 13)
             {
@@ -196,46 +196,44 @@ namespace Sodoku
             //Ascii code des nombres [0;9] = [48;57]
             if ((int)e.KeyChar < 48 || (int)e.KeyChar > 57) return;
             int valeurCourante = Int16.Parse((caseCourante == null ? "0" : caseCourante.Item3.ToString())+ e.KeyChar);
-            if (valeurCourante <= 0 || valeurCourante > nbrCase) return;
+            if (valeurCourante <= 0 || valeurCourante > Taille) return;
             caseCourante = new Tuple<int, int, int>(x, y, valeurCourante);
             AfficherGrille();
         }
         private void Dvg_motus_Paint(object sender, PaintEventArgs e)
         {
-           int largeur = (int)Math.Ceiling(Math.Sqrt(nbrCase));
-           int hauteur = (int)Math.Floor(Math.Sqrt(nbrCase));
+           int largeur = (int)Math.Ceiling(Math.Sqrt(Taille));
            int police = 30 / largeur;
-           for (int x = 0; x < nbrCase; x ++)
+           for (int x = 0; x < Taille; x ++)
             {
-                for (int y = 0; y < nbrCase; y ++)
+                for (int y = 0; y < Taille; y ++)
                 {
-                    if (sudoku.grille[x,y] != 0) continue;
-                    for(int z = 0; z < nbrCase; z++)
+                    if (Sudoku.Grille[x,y] != 0) continue;
+                    for(int z = 0; z < Taille; z++)
                     {
-                        if (sudoku.grilleNote[x,y,z] != 0)
+                        if (Sudoku.GrilleNote[x,y,z] != 0)
                         {
-                            e.Graphics.DrawString(sudoku.grilleNote[x, y, z].ToString(), new Font("Arial", police, FontStyle.Bold), Brushes.Gray, x * 50 + (z % largeur) * 50 / largeur, y * 50 + (z / largeur) * 50 / largeur);
+                            e.Graphics.DrawString(Sudoku.GrilleNote[x, y, z].ToString(), new Font("Arial", police, FontStyle.Bold), Brushes.Gray, x * 50 + (z % largeur) * 50 / largeur, y * 50 + (z / largeur) * 50 / largeur);
                         }
                     }
                 }
             }
-            if (caseCourante != null && notes == true)
+            if (caseCourante != null && Notes == true)
             {
-                System.Diagnostics.Debug.WriteLine(sudoku.grilleNote[caseCourante.Item1, caseCourante.Item2, caseCourante.Item3 - 1]);
 
-                bool effacement = sudoku.grilleNote[caseCourante.Item1, caseCourante.Item2, caseCourante.Item3 - 1] == 1;
-                Brush brush = effacement ? new SolidBrush(couleurSelection): new SolidBrush(Color.Gray);
+                bool effacement = Sudoku.GrilleNote[caseCourante.Item1, caseCourante.Item2, caseCourante.Item3 - 1] != 0;
+                //Effacement en ecrivant de la couleur du fond
+                Brush brush = effacement ? new SolidBrush(CouleurSelection): new SolidBrush(Color.Gray);
                 e.Graphics.DrawString(caseCourante.Item3.ToString(), new Font("Arial", police, FontStyle.Bold), brush, caseCourante.Item1 * 50 + ((caseCourante.Item3 - 1) % largeur) * 50 / largeur, caseCourante.Item2 * 50 + ((caseCourante.Item3 - 1) / largeur) * 50 / largeur);
                 
             }
-
-            for (int x = 0; x< nbrCase; x+=sudoku.largeurGroupe)
+            for (int x = 0; x< Taille; x+=Sudoku.LargeurGroupe)
             {
-                e.Graphics.DrawLine(new Pen(Color.Black, 2),x*50,0,x*50,nbrCase*50);
+                e.Graphics.DrawLine(new Pen(Color.Black, 2),x*50,0,x*50,Taille*50);
             }
-            for (int y = 0; y < nbrCase; y += sudoku.hauteurGroupe)
+            for (int y = 0; y < Taille; y += Sudoku.hauteurGroupe)
             {
-                e.Graphics.DrawLine(new Pen(Color.Black, 2),0,y * 50, nbrCase * 50, y * 50);
+                e.Graphics.DrawLine(new Pen(Color.Black, 2),0,y * 50, Taille * 50, y * 50);
             }
 
         }
@@ -248,47 +246,49 @@ namespace Sodoku
         private void Bt_rejouer_Click(object sender, EventArgs e)
         {
             Start();
-            var frm = new FMenu();
-            frm.Location = this.Location;
-            frm.StartPosition = FormStartPosition.Manual;
+            var frm = new FMenu
+            {
+                Location = this.Location,
+                StartPosition = FormStartPosition.Manual
+            };
             frm.Show();
             this.Dispose();
         }
 
         private void AfficherGrille()
         {
-            if (sudoku == null) return;
-            if (sudoku.estMort())
+            if (Sudoku == null) return;
+            if (Sudoku.EstMort())
             {
                 timerLb.Stop();
                 MessageBox.Show("Et c'est perdu", "Perdu");
-                for (int x = 0; x < nbrCase; x++)
+                for (int x = 0; x < Taille; x++)
                 {
-                    for (int y = 0; y < nbrCase; y++)
+                    for (int y = 0; y < Taille; y++)
                     {
-                        if(sudoku.grilleSolution[x, y] != sudoku.grille[x, y])
+                        if(Sudoku.GrilleSolution[x, y] != Sudoku.Grille[x, y])
                         {
                             dvg_motus.Rows[y].Cells[x].Style.ForeColor = Color.Red;
                         }
-                        dvg_motus.Rows[y].Cells[x].Value = sudoku.grilleSolution[x, y].ToString();
+                        dvg_motus.Rows[y].Cells[x].Value = Sudoku.GrilleSolution[x, y].ToString();
                     }
                 }
             }
-            else if (sudoku.aGagne())
+            else if (Sudoku.AGagne())
             {
                 timerLb.Stop();
                 MessageBox.Show("Et c'est gagné", "Gagné");
             }
             else
             {
-                for (int x = 0; x < nbrCase; x++)
+                for (int x = 0; x < Taille; x++)
                 {
-                    for (int y = 0; y < nbrCase; y++)
+                    for (int y = 0; y < Taille; y++)
                     {
-                        dvg_motus.Rows[y].Cells[x].Value = sudoku.grille[x, y] != 0 ? sudoku.grille[x, y].ToString() : "";
+                        dvg_motus.Rows[y].Cells[x].Value = Sudoku.Grille[x, y] != 0 ? Sudoku.Grille[x, y].ToString() : "";
                     }
                 }
-                if (caseCourante != null && notes == false)
+                if (caseCourante != null && Notes == false)
                 {
 
                     dvg_motus.Rows[caseCourante.Item2].Cells[caseCourante.Item1].Value = caseCourante.Item3;
@@ -300,8 +300,8 @@ namespace Sodoku
 
         private void Bt_indice_Click(object sender, EventArgs e)
         {
-            if (sudoku.estMort()) return;
-            (int x, int y ) = sudoku.Indice();
+            if (Sudoku.EstMort()) return;
+            (int x, int y ) = Sudoku.Indice();
             if (x == -1) return;
             dvg_motus.CurrentCell = dvg_motus.Rows[y].Cells[x];
             dvg_motus.CurrentCell.Style.ForeColor = Color.Blue;
@@ -311,19 +311,17 @@ namespace Sodoku
         private void Bt_notes_Click(object sender, EventArgs e)
         {
             this.Appliquer_Action();
-            notes = !notes;
-            bt_notes.BackColor = notes ? Color.Blue : Color.White;
+            Notes = !Notes;
+            bt_notes.BackColor = Notes ? Color.Blue : Color.White;
         }
 
         private void Placer(int v, int x, int y)
         {
-            if (notes)
+            if (Notes)
             {
-                System.Diagnostics.Debug.WriteLine("Note " + v + " a " + x + " " + y);
-
-                sudoku.Noter(v, x, y);
+                Sudoku.Noter(v, x, y);
             }
-            else if (sudoku.Jouer(v, x, y))
+            else if (Sudoku.Jouer(v, x, y))
             {
                 dvg_motus.Rows[y].Cells[x].Style.ForeColor = Color.Blue;
             }
@@ -337,14 +335,14 @@ namespace Sodoku
 
         private void Effacer(int x, int y)
         {
-            if (notes)
+            if (Notes)
             {
-                sudoku.EffacerNote(x, y);
+                Sudoku.EffacerNote(x, y);
             }
             else
             {
-                sudoku.Effacer(x, y);
-                dvg_motus.CurrentCell.Style.SelectionBackColor = couleurSelection;
+                Sudoku.Effacer(x, y);
+                dvg_motus.CurrentCell.Style.SelectionBackColor = CouleurSelection;
                 dvg_motus.CurrentCell.Style.SelectionForeColor = Color.Black;
             }
         }
@@ -369,7 +367,7 @@ namespace Sodoku
             caseCourante = null;
         }
 
-        private void dvg_motus_SelectionChanged(object sender, EventArgs e)
+        private void Dvg_motus_SelectionChanged(object sender, EventArgs e)
         {
             this.Appliquer_Action();
         }
