@@ -14,11 +14,14 @@ namespace Sodoku
 {
     public partial class Fsodoku : Form
     {
-        private readonly Sudoku Sudoku;
+        private Sudoku Sudoku;
         private static readonly Color CouleurSelection = Color.FromArgb(255, 170, 203, 255);
         private static readonly Color CouleurVoisin = Color.FromArgb(255, 225, 225, 225);
         private readonly int Taille;
+        private readonly Difficulte Niveau;
         private bool Notes = false;
+        private int Vie;
+        private int Indice;
 
         //case courrante où le joueur joue
         //(contrainte car la grille peut être supperieur a 9x9 donc certains nombres s'ecrivent sur 2 chiffres,
@@ -27,14 +30,17 @@ namespace Sodoku
         public Fsodoku(int taille = 9, Difficulte niveau = Difficulte.Facile, int vie = 3, int indice = 3)
         {
             InitializeComponent();
-            this.Taille = taille;
             this.Sudoku = new Sudoku(taille, niveau, vie, indice);
+            this.Taille = taille;
+            this.Niveau = niveau;
+            this.Vie = vie;
+            this.Indice = indice;
         }
 
         private void Init()
         {
             this.Width = (Taille > 9 ? Taille :9 )  * 50 + this.Padding.Right + this.Padding.Left;
-            this.Height =  Taille * 50 + 250;
+            this.Height =  Taille * 50 + 275;
             dvg_motus.Width = Taille * 50 +2;
             dvg_motus.Height = Taille * 50 +2;
             dvg_motus.Location = new Point(this.Width/2- dvg_motus.Width/2, dvg_motus.Location.Y);
@@ -145,6 +151,7 @@ namespace Sodoku
 
         private void Start()
         {
+            this.Sudoku = new Sudoku(this.Taille, this.Niveau);
             for (int x = 0; x < Taille; x++)
             {
                 for (int y = 0; y < Taille; y++)
@@ -245,14 +252,8 @@ namespace Sodoku
 
         private void Bt_rejouer_Click(object sender, EventArgs e)
         {
+            this.Sudoku = new Sudoku(this.Taille, this.Niveau, this.Vie, this.Indice);
             Start();
-            var frm = new FMenu
-            {
-                Location = this.Location,
-                StartPosition = FormStartPosition.Manual
-            };
-            frm.Show();
-            this.Dispose();
         }
 
         private void AfficherGrille()
@@ -372,7 +373,16 @@ namespace Sodoku
             this.Appliquer_Action();
         }
 
-       
+        private void Quiter(object sender, EventArgs e)
+        {
+            var frm = new FMenu
+            {
+                Location = this.Location,
+                StartPosition = FormStartPosition.Manual
+            };
+            frm.Show();
+            this.Dispose();
+        }
     }
 
    

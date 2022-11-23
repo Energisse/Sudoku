@@ -45,11 +45,13 @@
             this.gb_header = new System.Windows.Forms.GroupBox();
             this.timerLb = new Sodoku.Composants.TimerLabel();
             this.gb_bts = new System.Windows.Forms.GroupBox();
+            this.img_retour = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.dvg_motus)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.gb_header.SuspendLayout();
             this.gb_bts.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.img_retour)).BeginInit();
             this.SuspendLayout();
             // 
             // bt_rejouer
@@ -87,7 +89,7 @@
             dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.dvg_motus.DefaultCellStyle = dataGridViewCellStyle1;
             this.dvg_motus.EnableHeadersVisualStyles = false;
-            this.dvg_motus.Location = new System.Drawing.Point(30, 66);
+            this.dvg_motus.Location = new System.Drawing.Point(30, 100);
             this.dvg_motus.Margin = new System.Windows.Forms.Padding(0);
             this.dvg_motus.MultiSelect = false;
             this.dvg_motus.Name = "dvg_motus";
@@ -111,7 +113,7 @@
             // pictureBox1
             // 
             this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(404, 3);
+            this.pictureBox1.Location = new System.Drawing.Point(401, 51);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(48, 44);
             this.pictureBox1.TabIndex = 2;
@@ -120,10 +122,10 @@
             // lb_vie
             // 
             this.lb_vie.Font = new System.Drawing.Font("Microsoft Sans Serif", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lb_vie.Location = new System.Drawing.Point(301, 0);
+            this.lb_vie.Location = new System.Drawing.Point(320, 48);
             this.lb_vie.Margin = new System.Windows.Forms.Padding(0);
             this.lb_vie.Name = "lb_vie";
-            this.lb_vie.Size = new System.Drawing.Size(100, 50);
+            this.lb_vie.Size = new System.Drawing.Size(78, 50);
             this.lb_vie.TabIndex = 3;
             this.lb_vie.Text = "3";
             this.lb_vie.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -148,7 +150,7 @@
             // pictureBox2
             // 
             this.pictureBox2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox2.Image")));
-            this.pictureBox2.Location = new System.Drawing.Point(0, 0);
+            this.pictureBox2.Location = new System.Drawing.Point(1, 48);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(48, 50);
             this.pictureBox2.TabIndex = 5;
@@ -157,7 +159,7 @@
             // lb_indice
             // 
             this.lb_indice.Font = new System.Drawing.Font("Microsoft Sans Serif", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lb_indice.Location = new System.Drawing.Point(41, 0);
+            this.lb_indice.Location = new System.Drawing.Point(42, 48);
             this.lb_indice.Margin = new System.Windows.Forms.Padding(0);
             this.lb_indice.Name = "lb_indice";
             this.lb_indice.Size = new System.Drawing.Size(100, 50);
@@ -209,21 +211,21 @@
             this.gb_header.Controls.Add(this.lb_indice);
             this.gb_header.Controls.Add(this.timerLb);
             this.gb_header.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.gb_header.Location = new System.Drawing.Point(31, 16);
+            this.gb_header.Location = new System.Drawing.Point(31, 2);
             this.gb_header.Margin = new System.Windows.Forms.Padding(0);
             this.gb_header.Name = "gb_header";
             this.gb_header.Padding = new System.Windows.Forms.Padding(0);
-            this.gb_header.Size = new System.Drawing.Size(452, 50);
+            this.gb_header.Size = new System.Drawing.Size(452, 98);
             this.gb_header.TabIndex = 22;
             this.gb_header.TabStop = false;
             // 
             // timerLb
             // 
             this.timerLb.BackColor = System.Drawing.Color.White;
-            this.timerLb.Font = new System.Drawing.Font("Microsoft Sans Serif", 26F);
-            this.timerLb.Location = new System.Drawing.Point(-1, 0);
+            this.timerLb.Font = new System.Drawing.Font("Microsoft Sans Serif", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.timerLb.Location = new System.Drawing.Point(0, 0);
             this.timerLb.Name = "timerLb";
-            this.timerLb.Size = new System.Drawing.Size(452, 50);
+            this.timerLb.Size = new System.Drawing.Size(452, 98);
             this.timerLb.TabIndex = 19;
             this.timerLb.Text = "00:00";
             this.timerLb.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
@@ -234,11 +236,22 @@
             this.gb_bts.Controls.Add(this.bt_rejouer);
             this.gb_bts.Controls.Add(this.bt_notes);
             this.gb_bts.Controls.Add(this.bt_effacer);
-            this.gb_bts.Location = new System.Drawing.Point(30, 521);
+            this.gb_bts.Location = new System.Drawing.Point(30, 555);
             this.gb_bts.Name = "gb_bts";
             this.gb_bts.Size = new System.Drawing.Size(452, 55);
             this.gb_bts.TabIndex = 23;
             this.gb_bts.TabStop = false;
+            // 
+            // img_retour
+            // 
+            this.img_retour.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.img_retour.Image = ((System.Drawing.Image)(resources.GetObject("img_retour.Image")));
+            this.img_retour.Location = new System.Drawing.Point(29, 2);
+            this.img_retour.Name = "img_retour";
+            this.img_retour.Size = new System.Drawing.Size(50, 45);
+            this.img_retour.TabIndex = 24;
+            this.img_retour.TabStop = false;
+            this.img_retour.Click += new System.EventHandler(this.Quiter);
             // 
             // Fsodoku
             // 
@@ -246,6 +259,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(1402, 661);
+            this.Controls.Add(this.img_retour);
             this.Controls.Add(this.gb_bts);
             this.Controls.Add(this.gb_header);
             this.Controls.Add(this.dvg_motus);
@@ -260,6 +274,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.gb_header.ResumeLayout(false);
             this.gb_bts.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.img_retour)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -280,6 +295,7 @@
         private Composants.TimerLabel timerLb;
         private System.Windows.Forms.GroupBox gb_header;
         private System.Windows.Forms.GroupBox gb_bts;
+        private System.Windows.Forms.PictureBox img_retour;
     }
 }
 
