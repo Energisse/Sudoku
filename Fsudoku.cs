@@ -237,6 +237,7 @@ namespace Sodoku
             if ((int)e.KeyChar < 48 || (int)e.KeyChar > 57) return;
             int valeurCourante = Int16.Parse((caseCourante == null ? "0" : caseCourante.Item3.ToString())+ e.KeyChar);
             if (valeurCourante <= 0 || valeurCourante > Taille) return;
+            if (Sudoku.CaseEstUnIndice(x,y) || Sudoku.Grille[x,y] != 0) return;
             caseCourante = new Tuple<int, int, int>(x, y, valeurCourante);
             AfficherGrille();
         }
