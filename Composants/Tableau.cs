@@ -20,7 +20,6 @@ namespace Sodoku.Composants
         {
             if (e.KeyCode == Keys.Enter)
                 return;
-
             base.OnKeyDown(e);
         }
     }

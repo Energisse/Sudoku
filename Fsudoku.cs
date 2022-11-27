@@ -31,10 +31,27 @@ namespace Sodoku
         {
             InitializeComponent();
             this.Sudoku = new Sudoku(taille, niveau, vie, indice);
+            this.Sudoku.Tick(this.Timer);
             this.Taille = taille;
             this.Niveau = niveau;
             this.Vie = vie;
             this.Indice = indice;
+        }
+
+        public Fsodoku(Sudoku sudoku)
+        {
+            InitializeComponent();
+            this.Sudoku = sudoku;
+            this.Taille = sudoku.Taille;
+            this.Vie = sudoku.VieRestante;
+            this.Indice = sudoku.IndiceRestant;
+            timerLb.Afficher(sudoku.Temps);
+            this.Sudoku.Tick(this.Timer);
+        }
+
+        private void Timer(object sender, EventArgs e)
+        {
+            timerLb.Afficher(this.Sudoku.Temps);
         }
 
         private void Init()
@@ -73,6 +90,7 @@ namespace Sodoku
                 bouton.Location = new Point(dvg_motus.Location.X + i * 50 + 3, dvg_motus.Location.Y + Taille * 50 + 75);
                 this.Controls.Add(bouton);
             }
+          
             this.dvg_motus.CurrentCellChanged += new System.EventHandler(this.Dvg_motus_CurrentCellChanged);
             Afficher();
             Start();
@@ -81,7 +99,6 @@ namespace Sodoku
         {
             Init();
         }
-
         private void Afficher()
         {
             for (int x = 0; x < Taille; x++)
@@ -110,11 +127,11 @@ namespace Sodoku
 
 
             /*COLORIAGE DU BLOC DE x*x DE LA CASE SELECTIONNEE*/
-            int yAbsolue = (posY / Sudoku.hauteurGroupe) * Sudoku.hauteurGroupe;
+            int yAbsolue = (posY / Sudoku.HauteurGroupe) * Sudoku.HauteurGroupe;
             int xAbsolue = (posX / Sudoku.LargeurGroupe) * Sudoku.LargeurGroupe;
             for (int x = 0; x < Sudoku.LargeurGroupe; x++)
             {
-                for (int y = 0; y < Sudoku.hauteurGroupe; y++)
+                for (int y = 0; y < Sudoku.HauteurGroupe; y++)
                 {
                     //Utilisation du try pour eviter un bug d'indice lors du changement de taille
                     try
@@ -151,19 +168,35 @@ namespace Sodoku
 
         private void Start()
         {
-            this.Sudoku = new Sudoku(this.Taille, this.Niveau);
             for (int x = 0; x < Taille; x++)
             {
                 for (int y = 0; y < Taille; y++)
                 {
                     dvg_motus.Rows[y].Cells[x].Style = null ;
                 }
-
+            }
+            for (int x = 0; x < Taille; x++)
+            {
+                for (int y = 0; y < Taille; y++)
+                {
+                    if (!this.Sudoku.CaseEstUnIndice(x, y) && this.Sudoku.Grille[x, y] != 0)
+                    {
+                        if (this.Sudoku.CaseEstValide(this.Sudoku.Grille[x, y], x, y))
+                        {
+                            dvg_motus.Rows[y].Cells[x].Style.ForeColor = Color.Blue;
+                        }
+                        else
+                        {
+                            dvg_motus.Rows[y].Cells[x].Style.ForeColor = Color.Red;
+                            dvg_motus.Rows[y].Cells[x].Style.SelectionBackColor = Color.Red;
+                            dvg_motus.Rows[y].Cells[x].Style.SelectionForeColor = Color.White;
+                        }
+                    }
+                }
             }
             AfficherGrille();
-            timerLb.Reset();
-            timerLb.Start();
         }
+
         private void Dvg_motus_KeyDown(object sender, KeyEventArgs e)
         {
             if ((int)e.KeyCode == 13)
@@ -176,7 +209,7 @@ namespace Sodoku
         private void Dvg_motus_KeyPress(object sender, KeyPressEventArgs e)
         {
             //Si la partie est fini
-            if (Sudoku.EstMort()) return;
+            if (Sudoku.EstMort() || Sudoku.AGagne()) return;
 
             if ((int)e.KeyChar == 13)
             {
@@ -238,11 +271,11 @@ namespace Sodoku
             {
                 e.Graphics.DrawLine(new Pen(Color.Black, 2),x*50,0,x*50,Taille*50);
             }
-            for (int y = 0; y < Taille; y += Sudoku.hauteurGroupe)
+            for (int y = 0; y < Taille; y += Sudoku.HauteurGroupe)
             {
                 e.Graphics.DrawLine(new Pen(Color.Black, 2),0,y * 50, Taille * 50, y * 50);
             }
-
+           
         }
 
         private void Dvg_motus_CurrentCellChanged(object sender, EventArgs e)
@@ -252,16 +285,16 @@ namespace Sodoku
 
         private void Bt_rejouer_Click(object sender, EventArgs e)
         {
-            this.Sudoku = new Sudoku(this.Taille, this.Niveau, this.Vie, this.Indice);
+            this.Sudoku.Dispose();
+            Sauvegarde.Supprimer(this.Sudoku.DateTimeCreation.ToString());
+            this.Sudoku = new Sudoku(this.Taille, this.Niveau);
             Start();
         }
-
         private void AfficherGrille()
         {
             if (Sudoku == null) return;
             if (Sudoku.EstMort())
             {
-                timerLb.Stop();
                 MessageBox.Show("Et c'est perdu", "Perdu");
                 for (int x = 0; x < Taille; x++)
                 {
@@ -277,8 +310,14 @@ namespace Sodoku
             }
             else if (Sudoku.AGagne())
             {
-                timerLb.Stop();
                 MessageBox.Show("Et c'est gagné", "Gagné");
+                for (int x = 0; x < Taille; x++)
+                {
+                    for (int y = 0; y < Taille; y++)
+                    {
+                        dvg_motus.Rows[y].Cells[x].Value = Sudoku.Grille[x, y] != 0 ? Sudoku.Grille[x, y].ToString() : "";
+                    }
+                }
             }
             else
             {
@@ -291,10 +330,8 @@ namespace Sodoku
                 }
                 if (caseCourante != null && Notes == false)
                 {
-
                     dvg_motus.Rows[caseCourante.Item2].Cells[caseCourante.Item1].Value = caseCourante.Item3;
                 }
-
             }
             Afficher();
         }
@@ -375,15 +412,9 @@ namespace Sodoku
 
         private void Quiter(object sender, EventArgs e)
         {
-            var frm = new FMenu
-            {
-                Location = this.Location,
-                StartPosition = FormStartPosition.Manual
-            };
-            frm.Show();
+            this.Sudoku.Dispose();
+            this.Close();
             this.Dispose();
         }
     }
-
-   
 }

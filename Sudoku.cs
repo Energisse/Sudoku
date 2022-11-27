@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.Eventing.Reader;
 using System.Drawing;
@@ -9,10 +10,11 @@ using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using static System.Windows.Forms.LinkLabel;
+using System.IO;
+using System.Windows.Forms;
 
 namespace Sodoku
 {
-
     public enum Difficulte : int
     {
         Facile = 4,
@@ -20,41 +22,97 @@ namespace Sodoku
         Difficile = 2,
         Extreme = 1
     }
-    internal class Sudoku
+    public class Sudoku
     {
+        private readonly Timer Timer;
+        [JsonProperty]
         public int Taille { get; private set; }
         //Largeur du groupe ex : Une grille 9*9 a 9 groupes de 3*3 de largeur 3, une grille 12*12 a 12 groupes de 4*3 de largeur 4
+        [JsonProperty]
         public int LargeurGroupe { get; private set; }
         //Hauteur du groupe ex : Une grille 9*9 a 9 groupes de 3*3 de hauteur 3, une grille 12*12 a 12 groupes de 4*3 de hauteur 3
-        public int hauteurGroupe { get; private set; }
-        private readonly int[,] grilleIndice;
+        public int HauteurGroupe { get; private set; }
+        [JsonProperty]
+        private readonly int[,] GrilleIndice;
+        [JsonProperty]
         public int[,] Grille { get; private set; }
+        [JsonProperty]
         public int[,,] GrilleNote { get; private set; }
+        [JsonProperty]
         public int[,] GrilleSolution {  get; private set; }
-        public int VieRestante { get; private set; } 
-        public int IndiceRestant { get; private set; } 
+        [JsonProperty]
+        public int VieRestante { get; private set; }
+        [JsonProperty]
+        public int IndiceRestant { get; private set; }
+        [JsonProperty]
+        public int CaseRestante { get; private set; }
+        [JsonProperty]
+        public readonly int Niveau;
 
-        private int CaseRestante;
-        private readonly int niveau;
+        [JsonProperty]
+        public int Temps { get; private set; }
+
+        //dateTime de création permetant a l'identification de la partie parmis les parties enregistré
+        public long DateTimeCreation { get; private set; }
+
+        [JsonConstructor]
+        private Sudoku(int Taille, int Niveau, int VieRestante, int IndiceRestant, int[,] GrilleIndice, int[,] Grille, int[,,] GrilleNote, int[,] GrilleSolution, int CaseRestante, long DateTimeCreation, int LargeurGroupe, int HauteurGroupe, int Temps)
+        {
+            this.Taille = Taille;
+            this.VieRestante = VieRestante;
+            this.IndiceRestant = IndiceRestant;
+            this.GrilleIndice = GrilleIndice;
+            this.Grille = Grille;
+            this.GrilleNote = GrilleNote;
+            this.GrilleSolution = GrilleSolution;
+            this.CaseRestante = CaseRestante;
+            this.DateTimeCreation = DateTimeCreation;
+            this.Niveau = Niveau;
+            this.HauteurGroupe = HauteurGroupe;
+            this.LargeurGroupe = LargeurGroupe;
+            this.Temps = Temps;
+            this.Timer = new Timer();
+            this.Timer.Tick += new EventHandler(TimerEvent);
+            this.Timer.Interval = 1000;
+            if (!this.EstMort() && !this.AGagne())
+            {
+                this.Timer.Start();
+            }
+        }
+
+        public void Tick(Action<object, EventArgs> e)
+        {
+            this.Timer.Tick += new EventHandler(e);
+        }
+
+        private void CalculTailleGroupe()
+        {
+            int a = (int)Math.Truncate(Math.Sqrt(this.Taille));
+
+            while (a > 0)
+            {
+                if ((int)(this.Taille / a) == (this.Taille / (double)a)) break;
+                a--;
+            }
+
+            this.HauteurGroupe = a;
+            this.LargeurGroupe = this.Taille / HauteurGroupe;
+        }
 
         public Sudoku(int taille = 9, Difficulte niveau = Difficulte.Facile, int vie = 3, int indice = 3)
         {
+            this.Timer = new Timer();
+            this.Timer.Tick += new EventHandler(TimerEvent);
+            this.Timer.Interval = 1000;
+            this.Timer.Start();
+
+            this.DateTimeCreation = DateTime.Now.ToFileTime();
             this.Taille = taille;
             this.CaseRestante = taille * taille;
-            this.niveau = (int)niveau;
+            this.Niveau = (int)niveau;
 
-            int a = (int)Math.Truncate(Math.Sqrt(taille));
+            CalculTailleGroupe();
 
-            while(a > 0)
-            {
-                if ((int)(taille / a) == (taille / (double)a)) break;
-                a--;
-            }
-            System.Diagnostics.Debug.WriteLine(taille);
-
-            this.hauteurGroupe = a;
-            this.LargeurGroupe = taille/ hauteurGroupe;
-    
             this.VieRestante = vie;
             this.IndiceRestant = indice;
             GrilleNote = new int[taille, taille, taille];
@@ -64,7 +122,7 @@ namespace Sodoku
             Resoudre(GrilleSolution);
         
             //Création de la grille des indices
-            grilleIndice = (int[,])GrilleSolution.Clone();
+            GrilleIndice = (int[,])GrilleSolution.Clone();
 
             int suppresion = 0;
             int iteration = 0;
@@ -73,25 +131,23 @@ namespace Sodoku
             {
                 int x = i % taille;
                 int y = i / taille;
-                int temp = grilleIndice[x, y];
-                grilleIndice[x, y] = 0;
-                int[,] copie = (int[,])grilleIndice.Clone();
+                int temp = GrilleIndice[x, y];
+                GrilleIndice[x, y] = 0;
+                int[,] copie = (int[,])GrilleIndice.Clone();
 
                 if (this.ResoudreCompteur(copie, 0, 0) >= 2)
                 {
-                    grilleIndice[x, y] = temp;
+                    GrilleIndice[x, y] = temp;
                 }
                 //Limitation pour accelerer la génération
-                else if (suppresion++ >= taille* taille/ this.niveau)
+                else if (suppresion++ >= taille* taille/ this.Niveau)
                 {
-                    System.Diagnostics.Debug.WriteLine("fin");
-
                     break;
                 };
                 System.Diagnostics.Debug.WriteLine(suppresion + " " + ((double)iteration++ / ((double)taille * taille))*100 + "%");
 
             }
-            Grille = (int[,])grilleIndice.Clone();
+            Grille = (int[,])GrilleIndice.Clone();
             for (int x = 0; x < taille; x++)
             {
                 for (int y = 0; y < taille; y++)
@@ -102,9 +158,11 @@ namespace Sodoku
                     }
                 }
             }
-
         }
-
+        public void TimerEvent(object sender, EventArgs e)
+        {
+            this.Temps++;
+        }
         public bool EstMort()
         {
             return VieRestante == 0;
@@ -117,7 +175,7 @@ namespace Sodoku
 
         public bool CaseEstUnIndice(int x, int y)
         {
-            return grilleIndice[x, y] != 0;
+            return GrilleIndice[x, y] != 0;
         }
 
         public bool CaseEstValide(int v, int x, int y)
@@ -183,10 +241,10 @@ namespace Sodoku
         {
 
             int colonneAbsolue = (x / this.LargeurGroupe) * this.LargeurGroupe;
-            int ligneAbsolue = (y / this.hauteurGroupe) * this.hauteurGroupe;
+            int ligneAbsolue = (y / this.HauteurGroupe) * this.HauteurGroupe;
             for (int colonne = colonneAbsolue; colonne < colonneAbsolue + this.LargeurGroupe; colonne++)
             {
-                for (int ligne = ligneAbsolue; ligne < ligneAbsolue + this.hauteurGroupe; ligne++)
+                for (int ligne = ligneAbsolue; ligne < ligneAbsolue + this.HauteurGroupe; ligne++)
                 {
                     if (grille[colonne, ligne] == valeur) return false;
                 }
@@ -201,12 +259,14 @@ namespace Sodoku
             {
                 GrilleNote[x, y, z] = 0;
             }
+            Sauvegarde.Sauvegarder(this);
         }
 
         public void Noter(int v, int x, int y)
         {
             if (EstMort()) return;
             GrilleNote[x, y, v-1] = GrilleNote[x, y, v - 1] == 0 ? v : 0;
+            Sauvegarde.Sauvegarder(this);
         }
 
         public void Effacer(int x, int y)
@@ -220,6 +280,7 @@ namespace Sodoku
                 }
                 Grille[x, y] = 0;
             }
+            Sauvegarde.Sauvegarder(this);
         }
 
         public bool Jouer(int v, int x, int y)
@@ -232,10 +293,13 @@ namespace Sodoku
             {
                 /*La case joué n'est pas bonne*/
                 VieRestante--;
+                if (EstMort()) this.Timer.Stop();
+                Sauvegarde.Sauvegarder(this);
                 return false;
             }
             /*La case joué est bonne*/
             CaseRestante--;
+            Sauvegarde.Sauvegarder(this);
             return true;
         }
 
@@ -255,6 +319,7 @@ namespace Sodoku
                     return (x, y);
                 }
             }
+            Sauvegarde.Sauvegarder(this);
             return (-1,-1);
         }
 
@@ -272,6 +337,11 @@ namespace Sodoku
                 (liste[i], liste[k]) = (liste[k], liste[i]);
             }
             return liste;
+        }
+        public void Dispose()
+        {
+            this.Timer.Stop();
+            this.Timer.Dispose();
         }
     }
 }
