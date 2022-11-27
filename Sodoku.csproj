@@ -49,7 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Composants\Tableau.cs">
+    <Compile Include="Composants\Grille.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Composants\TimerLabel.cs">

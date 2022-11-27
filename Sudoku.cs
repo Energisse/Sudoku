@@ -12,12 +12,13 @@ using System.Threading.Tasks;
 using static System.Windows.Forms.LinkLabel;
 using System.IO;
 using System.Windows.Forms;
+using Sodoku.Composants;
 
 namespace Sodoku
 {
     public enum Difficulte : int
     {
-        Facile = 4,
+        Facile = 81,
         Moyen = 3,
         Difficile = 2,
         Extreme = 1
@@ -262,7 +263,7 @@ namespace Sodoku
             Sauvegarde.Sauvegarder(this);
         }
 
-        public void Noter(int v, int x, int y)
+        public void Noter( int x, int y,int v)
         {
             if (EstMort()) return;
             GrilleNote[x, y, v-1] = GrilleNote[x, y, v - 1] == 0 ? v : 0;
@@ -283,7 +284,7 @@ namespace Sodoku
             Sauvegarde.Sauvegarder(this);
         }
 
-        public bool Jouer(int v, int x, int y)
+        public bool Jouer( int x, int y, int v)
         {
             if (EstMort()) return false;
 
@@ -303,9 +304,9 @@ namespace Sodoku
             return true;
         }
 
-        public (int x, int y) Indice()
+        public (int x, int y,int v) Indice()
         {
-            if (IndiceRestant == 0 || VieRestante == 0) return (-1, -1);
+            if (IndiceRestant == 0 || VieRestante == 0) return (-1, -1,-1);
             //On parcours le tableau de facon aléatoire
             foreach (int x in SuiteAleatoire(0, Taille))
             {
@@ -314,13 +315,12 @@ namespace Sodoku
                     //On applique un indice uniquement au cases fause ou non remplise
                     if (CaseEstUnIndice(x, y)) continue;
                     if (Grille[x, y] == GrilleSolution[x, y]) continue;
-                    Jouer(GrilleSolution[x, y], x, y);
                     IndiceRestant--;
-                    return (x, y);
+                    return (x, y, GrilleSolution[x, y]);
                 }
             }
             Sauvegarde.Sauvegarder(this);
-            return (-1,-1);
+            return (-1,-1,-1);
         }
 
         private static int[] SuiteAleatoire(int debut, int fin)
