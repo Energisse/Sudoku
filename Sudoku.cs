@@ -18,7 +18,7 @@ namespace Sodoku
 {
     public enum Difficulte : int
     {
-        Facile = 81,
+        Facile = 4,
         Moyen = 3,
         Difficile = 2,
         Extreme = 1
@@ -34,13 +34,7 @@ namespace Sodoku
         //Hauteur du groupe ex : Une grille 9*9 a 9 groupes de 3*3 de hauteur 3, une grille 12*12 a 12 groupes de 4*3 de hauteur 3
         public int HauteurGroupe { get; private set; }
         [JsonProperty]
-        private readonly int[,] GrilleIndice;
-        [JsonProperty]
-        public int[,] Grille { get; private set; }
-        [JsonProperty]
-        public int[,,] GrilleNote { get; private set; }
-        [JsonProperty]
-        public int[,] GrilleSolution {  get; private set; }
+        public Case[,] Grille { get; private set; }
         [JsonProperty]
         public int VieRestante { get; private set; }
         [JsonProperty]
@@ -48,7 +42,7 @@ namespace Sodoku
         [JsonProperty]
         public int CaseRestante { get; private set; }
         [JsonProperty]
-        public readonly int Niveau;
+        public readonly Difficulte Niveau;
 
         [JsonProperty]
         public int Temps { get; private set; }
@@ -57,15 +51,12 @@ namespace Sodoku
         public long DateTimeCreation { get; private set; }
 
         [JsonConstructor]
-        private Sudoku(int Taille, int Niveau, int VieRestante, int IndiceRestant, int[,] GrilleIndice, int[,] Grille, int[,,] GrilleNote, int[,] GrilleSolution, int CaseRestante, long DateTimeCreation, int LargeurGroupe, int HauteurGroupe, int Temps)
+        private Sudoku(int Taille, Difficulte Niveau, int VieRestante, int IndiceRestant, Case[,] Grille, int CaseRestante, long DateTimeCreation, int LargeurGroupe, int HauteurGroupe, int Temps)
         {
             this.Taille = Taille;
             this.VieRestante = VieRestante;
             this.IndiceRestant = IndiceRestant;
-            this.GrilleIndice = GrilleIndice;
             this.Grille = Grille;
-            this.GrilleNote = GrilleNote;
-            this.GrilleSolution = GrilleSolution;
             this.CaseRestante = CaseRestante;
             this.DateTimeCreation = DateTimeCreation;
             this.Niveau = Niveau;
@@ -100,7 +91,7 @@ namespace Sodoku
             this.LargeurGroupe = this.Taille / HauteurGroupe;
         }
 
-        public Sudoku(int taille = 9, Difficulte niveau = Difficulte.Facile, int vie = 3, int indice = 3)
+        public Sudoku(int taille = 9, Difficulte Niveau = Difficulte.Facile, int vie = 3, int indice = 3)
         {
             this.Timer = new Timer();
             this.Timer.Tick += new EventHandler(TimerEvent);
@@ -109,21 +100,21 @@ namespace Sodoku
 
             this.DateTimeCreation = DateTime.Now.ToFileTime();
             this.Taille = taille;
-            this.CaseRestante = taille * taille;
-            this.Niveau = (int)niveau;
+            this.CaseRestante = 0;
+            this.Niveau = Niveau;
 
             CalculTailleGroupe();
 
             this.VieRestante = vie;
             this.IndiceRestant = indice;
-            GrilleNote = new int[taille, taille, taille];
-            
+            Grille = new Case[taille, taille];
+
             //Création de la grille a partir d'une grille vide
-            GrilleSolution = new int[taille, taille];
-            Resoudre(GrilleSolution);
-        
+            int[,]  grille = new int[taille, taille];
+            Resoudre(grille);
+
             //Création de la grille des indices
-            GrilleIndice = (int[,])GrilleSolution.Clone();
+            int[,]  grilleIndice = (int[,])grille.Clone();
 
             int suppresion = 0;
             int iteration = 0;
@@ -132,30 +123,38 @@ namespace Sodoku
             {
                 int x = i % taille;
                 int y = i / taille;
-                int temp = GrilleIndice[x, y];
-                GrilleIndice[x, y] = 0;
-                int[,] copie = (int[,])GrilleIndice.Clone();
+                int temp = grilleIndice[x, y];
+                grilleIndice[x, y] = 0;
+                int[,] copie = (int[,])grilleIndice.Clone();
 
                 if (this.ResoudreCompteur(copie, 0, 0) >= 2)
                 {
-                    GrilleIndice[x, y] = temp;
+                    grilleIndice[x, y] = temp;
+
                 }
                 //Limitation pour accelerer la génération
-                else if (suppresion++ >= taille* taille/ this.Niveau)
+                else
                 {
-                    break;
-                };
+                    CaseRestante++;
+                    if (suppresion++ >= taille * taille / (int)this.Niveau)
+                    {
+                        break;
+                    };
+                }
                 System.Diagnostics.Debug.WriteLine(suppresion + " " + ((double)iteration++ / ((double)taille * taille))*100 + "%");
 
             }
-            Grille = (int[,])GrilleIndice.Clone();
             for (int x = 0; x < taille; x++)
             {
-                for (int y = 0; y < taille; y++)
+                for(int y =0; y <taille; y++)
                 {
-                    if (Grille[x, y] != 0)
+                    if(grilleIndice[x, y] == grille[x, y])
                     {
-                        CaseRestante--;
+                        Grille[x, y] = new Case(taille, grille[x, y],true);
+                    }
+                    else
+                    {
+                        Grille[x, y] = new Case(taille, grille[x, y],false);
                     }
                 }
             }
@@ -174,14 +173,9 @@ namespace Sodoku
             return CaseRestante == 0;
         }
 
-        public bool CaseEstUnIndice(int x, int y)
-        {
-            return GrilleIndice[x, y] != 0;
-        }
-
         public bool CaseEstValide(int v, int x, int y)
         {
-            return GrilleSolution[x, y] == v;
+            return Grille[x, y].EstValide();
         }
         public bool Resoudre(int[,] grille, int x = 0, int y = 0)
         {
@@ -256,30 +250,27 @@ namespace Sodoku
         public void EffacerNote(int x, int y)
         {
             if (EstMort()) return;
-            for (int z = 0; z < Taille; z++)
-            {
-                GrilleNote[x, y, z] = 0;
-            }
+           Grille[x, y].EffacerNotes();
             Sauvegarde.Sauvegarder(this);
         }
 
         public void Noter( int x, int y,int v)
         {
             if (EstMort()) return;
-            GrilleNote[x, y, v-1] = GrilleNote[x, y, v - 1] == 0 ? v : 0;
+            this.Grille[x, y].Notes[v - 1] = this.Grille[x, y].Notes[v - 1] == 0 ? v : 0;
             Sauvegarde.Sauvegarder(this);
         }
 
         public void Effacer(int x, int y)
         {
             if (EstMort()) return;
-            if (!CaseEstUnIndice(x, y))
+            if (!Grille[x, y].EstUnIndice())
             {
-                if (CaseEstValide(Grille[x, y], x, y))
+                if (Grille[x, y].EstValide())
                 {
                     CaseRestante++;
                 }
-                Grille[x, y] = 0;
+                Grille[x, y].Valeur = 0;
             }
             Sauvegarde.Sauvegarder(this);
         }
@@ -288,8 +279,8 @@ namespace Sodoku
         {
             if (EstMort()) return false;
 
-            if (Grille[x, y] != 0) return true;
-            Grille[x, y] = v;
+            if (Grille[x, y].EstUnIndice())  return true;
+            Grille[x, y].Valeur = v;
             if (!CaseEstValide(v, x, y))
             {
                 /*La case joué n'est pas bonne*/
@@ -300,6 +291,7 @@ namespace Sodoku
             }
             /*La case joué est bonne*/
             CaseRestante--;
+            if(AGagne()) this.Timer.Stop();
             Sauvegarde.Sauvegarder(this);
             return true;
         }
@@ -313,10 +305,10 @@ namespace Sodoku
                 foreach (int y in SuiteAleatoire(0, Taille))
                 {
                     //On applique un indice uniquement au cases fause ou non remplise
-                    if (CaseEstUnIndice(x, y)) continue;
-                    if (Grille[x, y] == GrilleSolution[x, y]) continue;
+                    if (Grille[x, y].EstUnIndice()) continue;
+                    if (Grille[x, y].EstValide()) continue;
                     IndiceRestant--;
-                    return (x, y, GrilleSolution[x, y]);
+                    return (x, y, Grille[x, y].Valeur);
                 }
             }
             Sauvegarde.Sauvegarder(this);
@@ -342,6 +334,52 @@ namespace Sodoku
         {
             this.Timer.Stop();
             this.Timer.Dispose();
+        }
+    }
+
+    public class Case
+    {
+        public int Solution { get; protected set; }
+        public int Taille;
+        public int[] Notes;
+        public bool Indice;
+        public int Valeur;
+
+        public Case(int Taille, int Solution,bool Indice = false)
+        {
+            this.Solution = Solution;
+            this.Valeur = Indice ? Solution : 0;
+            this.Indice = Indice;
+            this.Taille = Taille;
+            this.Notes = new int[Indice ? 0 : Taille];
+        }
+
+        public bool EstValide()
+        {
+            return this.Valeur == this.Solution;
+        }
+
+        public bool EstUnIndice()
+        {
+            return Indice;
+        }
+
+        public bool EstJouable()
+        {
+            return !this.EstUnIndice() && this.EstVide();
+        }
+
+        public void EffacerNotes()
+        {
+            for(int i = 0; i < this.Notes.Length; i++)
+            {
+                this.Notes[i] = 0;
+            }
+        }
+
+        public bool EstVide()
+        {
+            return this.Valeur == 0;
         }
     }
 }

@@ -43,6 +43,7 @@ namespace Sodoku
             this.Taille = sudoku.Taille;
             this.Vie = sudoku.VieRestante;
             this.Indice = sudoku.IndiceRestant;
+            this.Niveau = sudoku.Niveau;
             Init();
         }
 

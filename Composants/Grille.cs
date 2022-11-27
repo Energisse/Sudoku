@@ -76,15 +76,7 @@ namespace Sodoku.Composants
             {
                 for (int y = 0; y < Sudoku.HauteurGroupe; y++)
                 {
-                    //Utilisation du try pour eviter un bug d'indice lors du changement de taille
-                    try
-                    {
-                        this.Rows[y + yAbsolue].Cells[x + xAbsolue].Style.BackColor = CouleurVoisin;
-                    }
-                    catch (Exception e)
-                    {
-                        break;
-                    }
+                this.Rows[y + yAbsolue].Cells[x + xAbsolue].Style.BackColor = CouleurVoisin;
                 }
             }
 
@@ -108,7 +100,7 @@ namespace Sodoku.Composants
         }
         public void Effacer(int x, int y)
         {
-            if (_Note)
+            if (Note)
             {
                 Sudoku.EffacerNote(x, y);
             }
@@ -118,6 +110,7 @@ namespace Sodoku.Composants
                 this.CurrentCell.Style.SelectionBackColor = CouleurSelection;
                 this.CurrentCell.Style.SelectionForeColor = Color.Black;
             }
+            AfficherGrille();
         }
 
         private void AfficherGrille()
@@ -126,7 +119,7 @@ namespace Sodoku.Composants
             {
                 for (int y = 0; y < Sudoku.Taille; y++)
                 {
-                    this.Rows[y].Cells[x].Value = Sudoku.Grille[x, y] != 0 ? Sudoku.Grille[x, y].ToString() : "";
+                    this.Rows[y].Cells[x].Value = Sudoku.Grille[x, y].Valeur != 0 ? Sudoku.Grille[x, y].Valeur.ToString() : "";
                 }
             }
             if (caseCourante != null && _Note == false)
@@ -141,15 +134,14 @@ namespace Sodoku.Composants
 
             this.RowCount = Sudoku.Taille;
             this.ColumnCount = Sudoku.Taille;
-
+            this.ClearSelection();
             for (int x = 0; x < Sudoku.Taille; x++)
             {
                 this.Columns[x].Width = 50;
                 for (int y = 0; y < Sudoku.Taille; y++)
                 {
+                    this.Rows[y].Cells[x] = new DataGridViewCase(Sudoku.Grille[x,y]);
                     this.Rows[y].Height = 50;
-                    this.Rows[y].Cells[x].Value = "";
-                    this.Rows[y].Cells[x].Style = null;
                 }
             }
             for (int x = 0; x < Sudoku.Taille; x++)
@@ -164,25 +156,6 @@ namespace Sodoku.Composants
                 AfficherGrilleMort();
                 return;
             }
-                for (int x = 0; x < Sudoku.Taille; x++)
-                {
-                    for (int y = 0; y < Sudoku.Taille; y++)
-                    {
-                        if (!this.Sudoku.CaseEstUnIndice(x, y) && this.Sudoku.Grille[x, y] != 0)
-                        {
-                            if (this.Sudoku.CaseEstValide(this.Sudoku.Grille[x, y], x, y))
-                            {
-                                this.Rows[y].Cells[x].Style.ForeColor = Color.Blue;
-                            }
-                            else
-                            {
-                                this.Rows[y].Cells[x].Style.ForeColor = Color.Red;
-                                this.Rows[y].Cells[x].Style.SelectionBackColor = Color.Red;
-                                this.Rows[y].Cells[x].Style.SelectionForeColor = Color.White;
-                            }
-                        }
-                    }
-                }
             AfficherGrille();
         }
         private void AfficherGrilleMort()
@@ -191,15 +164,8 @@ namespace Sodoku.Composants
             {
                 for (int y = 0; y < Sudoku.Taille; y++)
                 {
-                    if (Sudoku.GrilleSolution[x, y] != Sudoku.Grille[x, y])
-                    {
-                        this.Rows[y].Cells[x].Style.ForeColor = Color.Red;
-                    }
-                    else if (!Sudoku.CaseEstUnIndice(x,y) &&  Sudoku.GrilleSolution[x, y] == Sudoku.Grille[x, y])
-                    {
-                        this.Rows[y].Cells[x].Style.ForeColor = Color.Blue;
-                    }
-                    this.Rows[y].Cells[x].Value = Sudoku.GrilleSolution[x, y].ToString();
+                    this.Rows[y].Cells[x].Value = Sudoku.Grille[x, y].Solution.ToString();
+                    ((DataGridViewCase)this.Rows[y].Cells[x]).Reponse = true;
                 }
             }
         }
@@ -210,10 +176,15 @@ namespace Sodoku.Composants
             (int x, int y,int v) = Sudoku.Indice();
             if (x == -1) return;
             this.AfficherGrille();
-            Placer(x, y, v);        
+            Placer(x, y, v,false);        
             this.Rows[y].Cells[x].Selected = true;
         }
-        public void Placer(int x, int y, int v,bool noter = false)
+
+        public void Placer(int x, int y, int v)
+        {
+            this.Placer(x, y,v,this.Note);
+        }
+        private void Placer(int x, int y, int v,bool noter)
         {
             if (noter)
             {
@@ -221,17 +192,8 @@ namespace Sodoku.Composants
             }
             else
             {
-                if (Sudoku.Jouer(x, y, v))
-                {
-                    this.Rows[y].Cells[x].Style.ForeColor = Color.Blue;
-                }
-                else
-                {
-                    this.Rows[y].Cells[x].Style.ForeColor = Color.Red;
-                    this.Rows[y].Cells[x].Style.SelectionBackColor = Color.Red;
-                    this.Rows[y].Cells[x].Style.SelectionForeColor = Color.White;
-                }
-                onPlay();
+               Sudoku.Jouer(x, y, v);
+               onPlay();
                if (Sudoku.EstMort())
                {
                    MessageBox.Show("Et c'est perdu", "Perdu");
@@ -251,27 +213,17 @@ namespace Sodoku.Composants
             if (Sudoku == null) return;
             int largeur = (int)Math.Ceiling(Math.Sqrt(Sudoku.Taille));
             int police = 30 / largeur;
-            for (int x = 0; x < Sudoku.Taille; x++)
-            {
-                for (int y = 0; y < Sudoku.Taille; y++)
-                {
-                    if (Sudoku.Grille[x, y] != 0) continue;
-                    for (int z = 0; z < Sudoku.Taille; z++)
-                    {
-                        if (Sudoku.GrilleNote[x, y, z] != 0)
-                        {
-                            e.Graphics.DrawString(Sudoku.GrilleNote[x, y, z].ToString(), new Font("Arial", police, FontStyle.Bold), Brushes.Gray, x * 50 + (z % largeur) * 50 / largeur, y * 50 + (z / largeur) * 50 / largeur);
-                        }
-                    }
-                }
-            }
+         
 
             if (caseCourante != null && _Note == true)
             {
-                bool effacement = Sudoku.GrilleNote[caseCourante.X, caseCourante.Y, caseCourante.V - 1] != 0;
-                //Effacement en ecrivant de la couleur du fond
-                Brush brush = effacement ? new SolidBrush(CouleurSelection) : new SolidBrush(Color.Gray);
-                e.Graphics.DrawString(caseCourante.V.ToString(), new Font("Arial", police, FontStyle.Bold), brush, caseCourante.X * 50 + ((caseCourante.V - 1) % largeur) * 50 / largeur, caseCourante.Y * 50 + ((caseCourante.V - 1) / largeur) * 50 / largeur);
+                if(Sudoku.Grille[caseCourante.X, caseCourante.Y].EstJouable())
+                {
+                    bool effacement = Sudoku.Grille[caseCourante.X, caseCourante.Y].Notes[caseCourante.V - 1] != 0;
+                    //Effacement en ecrivant de la couleur du fond
+                    Brush brush = effacement ? new SolidBrush(CouleurSelection) : new SolidBrush(Color.Gray);
+                    e.Graphics.DrawString(caseCourante.V.ToString(), new Font("Arial", police, FontStyle.Bold), brush, caseCourante.X * 50 + ((caseCourante.V - 1) % largeur) * 50 / largeur, caseCourante.Y * 50 + ((caseCourante.V - 1) / largeur) * 50 / largeur);
+                }
 
             }
             for (int x = 0; x < Sudoku.Taille; x += Sudoku.LargeurGroupe)
@@ -322,7 +274,7 @@ namespace Sodoku.Composants
             if ((int)e.KeyChar < 48 || (int)e.KeyChar > 57) return;
             int valeurCourante = Int16.Parse((caseCourante == null ? "0" : caseCourante.V.ToString()) + e.KeyChar);
             if (valeurCourante <= 0 || valeurCourante > Sudoku.Taille) return;
-            if (Sudoku.CaseEstUnIndice(x, y) || Sudoku.Grille[x, y] != 0) return;
+            if (!Sudoku.Grille[x, y].EstJouable()) return;
             caseCourante = new CaseCourante(x, y, valeurCourante);
             AfficherGrille();
         }
@@ -331,7 +283,6 @@ namespace Sodoku.Composants
         {
             this.Appliquer_Action();
             Afficher();
-
         }
 
         protected override void OnKeyDown(KeyEventArgs e)
@@ -340,7 +291,6 @@ namespace Sodoku.Composants
                 return;
             base.OnKeyDown(e);
         }
-
     }
 
     internal class CaseCourante
