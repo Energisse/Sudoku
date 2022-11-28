@@ -121,6 +121,7 @@ namespace Sodoku
 
         private void Quiter(object sender, EventArgs e)
         {
+            Sauvegarde.Sauvegarder(this.Sudoku);
             this.Sudoku.Dispose();
             this.Close();
             this.Dispose();

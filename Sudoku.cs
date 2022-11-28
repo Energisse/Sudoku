@@ -308,7 +308,7 @@ namespace Sodoku
                     if (Grille[x, y].EstUnIndice()) continue;
                     if (Grille[x, y].EstValide()) continue;
                     IndiceRestant--;
-                    return (x, y, Grille[x, y].Valeur);
+                    return (x, y, Grille[x, y].Solution);
                 }
             }
             Sauvegarde.Sauvegarder(this);
