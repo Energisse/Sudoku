@@ -56,26 +56,26 @@
     <Compile Include="Composants\TimerLabel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="FMenu.cs">
+    <Compile Include="Presentation\FMenu.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FMenu.Designer.cs">
+    <Compile Include="Presentation\FMenu.Designer.cs">
       <DependentUpon>FMenu.cs</DependentUpon>
     </Compile>
-    <Compile Include="Fsudoku.cs">
+    <Compile Include="Presentation\Fsudoku.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Fsudoku.Designer.cs">
+    <Compile Include="Presentation\Fsudoku.Designer.cs">
       <DependentUpon>Fsudoku.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Sauvegarde.cs" />
-    <Compile Include="Sudoku.cs" />
-    <EmbeddedResource Include="FMenu.resx">
+    <Compile Include="Metier\Sauvegarde.cs" />
+    <Compile Include="Metier\Sudoku.cs" />
+    <EmbeddedResource Include="Presentation\FMenu.resx">
       <DependentUpon>FMenu.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Fsudoku.resx">
+    <EmbeddedResource Include="Presentation\Fsudoku.resx">
       <DependentUpon>Fsudoku.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -103,7 +103,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="images\coeur.png" />
+    <Content Include="Images\coeur.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
