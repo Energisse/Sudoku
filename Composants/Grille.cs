@@ -272,8 +272,17 @@ namespace Sodoku.Composants
             //On prends uniquement les chiffre de 0 a 9
             //Ascii code des nombres [0;9] = [48;57]
             if ((int)e.KeyChar < 48 || (int)e.KeyChar > 57) return;
+            if ((int)e.KeyChar-48 > Sudoku.Taille) return;
             int valeurCourante = Int16.Parse((caseCourante == null ? "0" : caseCourante.V.ToString()) + e.KeyChar);
-            if (valeurCourante <= 0 || valeurCourante > Sudoku.Taille) return;
+            if (valeurCourante <= 0) return;
+            if (valeurCourante > Sudoku.Taille)
+            {
+                if ((int)e.KeyChar == 48) return;
+
+                valeurCourante = (int)e.KeyChar-48;
+
+            }
+
             if (!Sudoku.Grille[x, y].EstJouable()) return;
             caseCourante = new CaseCourante(x, y, valeurCourante);
             AfficherGrille();
