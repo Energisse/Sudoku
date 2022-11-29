@@ -219,7 +219,7 @@ namespace Sodoku.Composants
             {
                 if(Sudoku.Grille[caseCourante.X, caseCourante.Y].EstJouable())
                 {
-                    bool effacement = Sudoku.Grille[caseCourante.X, caseCourante.Y].Notes[caseCourante.V - 1] != 0;
+                    bool effacement = Sudoku.Grille[caseCourante.X, caseCourante.Y].Notes[caseCourante.V - 1];
                     //Effacement en ecrivant de la couleur du fond
                     Brush brush = effacement ? new SolidBrush(CouleurSelection) : new SolidBrush(Color.Gray);
                     e.Graphics.DrawString(caseCourante.V.ToString(), new Font("Arial", police, FontStyle.Bold), brush, caseCourante.X * 50 + ((caseCourante.V - 1) % largeur) * 50 / largeur, caseCourante.Y * 50 + ((caseCourante.V - 1) / largeur) * 50 / largeur);

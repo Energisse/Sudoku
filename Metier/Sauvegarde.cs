@@ -10,9 +10,12 @@ using System.Windows.Forms;
 
 namespace Sodoku
 {
+    //Class de sauvegarde
     internal class Sauvegarde
     {
+        //Chemin des sauvegarde
         private static string chemin = System.Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "/SudokuHalvick/";
+        //Sauvegarde l'etat du sudoku
         public static void Sauvegarder(Sudoku sudoku)
         {
             if (!Directory.Exists(chemin))
@@ -21,6 +24,7 @@ namespace Sodoku
             }
             File.WriteAllText(chemin + sudoku.DateTimeCreation + ".json", JsonConvert.SerializeObject(sudoku));
         }
+        //Charge un sudoku par sa date de création
         public static Sudoku Charger(string dataTime)
         {
             if (!Directory.Exists(chemin))
@@ -29,10 +33,10 @@ namespace Sodoku
                 //Pas de dossier, pas de sauvegarde donc fin.
                 return null;
             }
-
             return JsonConvert.DeserializeObject<Sudoku>(File.ReadAllText(chemin+dataTime+".json"));
         }
 
+        //Charge la liste des Sudoku
         public static JToken[] Charger()
         {
             if (!Directory.Exists(chemin))
@@ -52,6 +56,7 @@ namespace Sodoku
             return sauvegardes;
         }
 
+        //Supprime un sudoku en fonction de sa date de création
         public static void Supprimer(string dateTime)
         {
             if (!Directory.Exists(chemin))

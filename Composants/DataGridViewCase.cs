@@ -35,10 +35,10 @@ namespace Sodoku.Composants
            value, formattedValue, errorText, cellStyle,
            advancedBorderStyle, paintParts);
 
-            if (this.SudokuCase.EstUnIndice()) 
-            {
-                return;
-            }
+            //Si c'est un indice rien n'est a faire
+            if (this.SudokuCase.EstUnIndice()) return;
+            
+            //Si c'est une case reponse (en cas de perte)
             if (Reponse)
             {
                 this.Style.ForeColor = Color.Red;
@@ -63,13 +63,14 @@ namespace Sodoku.Composants
                 }
             }
             if (!this.SudokuCase.EstVide()) return;
+            //Affichage des notes
             for (int z = 0; z < this.SudokuCase.Notes.Length; z++)
             {
-                if (this.SudokuCase.Notes[z] != 0)
+                if (this.SudokuCase.Notes[z])
                 {
                     int largeur = (int)Math.Ceiling(Math.Sqrt(SudokuCase.Taille));
                     int police = 30 / largeur;
-                    graphics.DrawString(this.SudokuCase.Notes[z].ToString(), new Font("Arial", police, FontStyle.Bold), Brushes.Gray, cellBounds.X + (z % largeur) * cellBounds.Width / largeur, cellBounds.Y + (z / largeur) * cellBounds.Width / largeur);
+                    graphics.DrawString((z+1).ToString(), new Font("Arial", police, FontStyle.Bold), Brushes.Gray, cellBounds.X + (z % largeur) * cellBounds.Width / largeur, cellBounds.Y + (z / largeur) * cellBounds.Width / largeur);
                 }
             }
         }

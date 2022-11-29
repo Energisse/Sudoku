@@ -34,22 +34,24 @@ namespace Sodoku
         //Hauteur du groupe ex : Une grille 9*9 a 9 groupes de 3*3 de hauteur 3, une grille 12*12 a 12 groupes de 4*3 de hauteur 3
         public int HauteurGroupe { get; private set; }
         [JsonProperty]
+        //Grille contenant les cases
         public Case[,] Grille { get; private set; }
         [JsonProperty]
         public int VieRestante { get; private set; }
         [JsonProperty]
         public int IndiceRestant { get; private set; }
         [JsonProperty]
+        //CaseRestante avant la victoire
         public int CaseRestante { get; private set; }
         [JsonProperty]
         public readonly Difficulte Niveau;
-
+        //temps de jeu
         [JsonProperty]
         public int Temps { get; private set; }
-
         //dateTime de création permetant a l'identification de la partie parmis les parties enregistré
         public long DateTimeCreation { get; private set; }
 
+        //Constructeur de la sauvegarde JSON
         [JsonConstructor]
         private Sudoku(int Taille, Difficulte Niveau, int VieRestante, int IndiceRestant, Case[,] Grille, int CaseRestante, long DateTimeCreation, int LargeurGroupe, int HauteurGroupe, int Temps)
         {
@@ -70,25 +72,6 @@ namespace Sodoku
             {
                 this.Timer.Start();
             }
-        }
-
-        public void Tick(Action<object, EventArgs> e)
-        {
-            this.Timer.Tick += new EventHandler(e);
-        }
-
-        private void CalculTailleGroupe()
-        {
-            int a = (int)Math.Truncate(Math.Sqrt(this.Taille));
-
-            while (a > 0)
-            {
-                if ((int)(this.Taille / a) == (this.Taille / (double)a)) break;
-                a--;
-            }
-
-            this.HauteurGroupe = a;
-            this.LargeurGroupe = this.Taille / HauteurGroupe;
         }
 
         public Sudoku(int taille = 9, Difficulte Niveau = Difficulte.Facile, int vie = 3, int indice = 3)
@@ -117,8 +100,8 @@ namespace Sodoku
             int[,]  grilleIndice = (int[,])grille.Clone();
 
             int suppresion = 0;
-            int iteration = 0;
             //AMERLIORER LA SUPPRESSION DES CHIFFRES
+            //Suppression dans un ordre aleatoire pour eviter un groupement de chiffre a la fin
             foreach (int i in SuiteAleatoire(0, taille*taille))
             {
                 int x = i % taille;
@@ -141,42 +124,66 @@ namespace Sodoku
                         break;
                     };
                 }
-                System.Diagnostics.Debug.WriteLine(suppresion + " " + ((double)iteration++ / ((double)taille * taille))*100 + "%");
-
             }
+
+            //Ajoute les cases au tableau
             for (int x = 0; x < taille; x++)
             {
                 for(int y =0; y <taille; y++)
                 {
-                    if(grilleIndice[x, y] == grille[x, y])
+                    //Est un indice
+                    if(grilleIndice[x, y] != 0)
                     {
                         Grille[x, y] = new Case(taille, grille[x, y],true);
                     }
-                    else
+                    else //N'est pas un indice
                     {
                         Grille[x, y] = new Case(taille, grille[x, y],false);
                     }
                 }
             }
         }
+
+        //Tick du timer
+        public void Tick(Action<object, EventArgs> e)
+        {
+            this.Timer.Tick += new EventHandler(e);
+        }
+
+        //Calcul la taille des groupe de cases ex: pour une grille 9x9 les groupes sont 3x3, pour 10x10 c'est 5x2
+        private void CalculTailleGroupe()
+        {
+            int hauteur = (int)Math.Truncate(Math.Sqrt(this.Taille));
+
+            while (hauteur > 0)
+            {
+                if ((int)(this.Taille / hauteur) == (this.Taille / (double)hauteur)) break;
+                hauteur--;
+            }
+
+            this.HauteurGroupe = hauteur;
+            this.LargeurGroupe = this.Taille / HauteurGroupe;
+
+        }
+
+        //Evenement du timer
         public void TimerEvent(object sender, EventArgs e)
         {
             this.Temps++;
         }
+        //Retourne si le joueur est mort
         public bool EstMort()
         {
             return VieRestante == 0;
         }
-
+        
+        //Retourne si le joueur a gagné
         public bool AGagne()
         {
             return CaseRestante == 0;
         }
 
-        public bool CaseEstValide(int v, int x, int y)
-        {
-            return Grille[x, y].EstValide();
-        }
+        //Resouds une grille
         public bool Resoudre(int[,] grille, int x = 0, int y = 0)
         {
             if (y == Taille) return true;
@@ -194,6 +201,7 @@ namespace Sodoku
             return false;
         }
 
+        //Resouds une grille et retourne le nombre de solution possible jusqu'a 2
         private int ResoudreCompteur(int[,] grille, int x, int y)
         {
             if (y == Taille) return 1;
@@ -214,6 +222,7 @@ namespace Sodoku
             return possibilite;
         }
 
+        //Retourne si un element n'est pas dans la ligne
         private bool NestPasDansLaLigne(int[,] grille, int valeur, int x, int y)
         {
             for (int i = 0; i < Taille; i++)
@@ -223,6 +232,7 @@ namespace Sodoku
             return true;
         }
 
+        //Retourne si un element n'est pas dans la colonne
         private bool NestPasDansLaColonne(int[,] grille, int valeur, int x, int y)
         {
             for (int i = 0; i < Taille; i++)
@@ -232,6 +242,7 @@ namespace Sodoku
             return true;
         }
 
+        //Retourne si un element n'est pas dans un carré
         private bool ControleInterieurCarre(int[,] grille, int valeur, int x, int y)
         {
 
@@ -247,20 +258,24 @@ namespace Sodoku
             return true;
         }
 
+        //Efface une note
         public void EffacerNote(int x, int y)
         {
             if (EstMort()) return;
-           Grille[x, y].EffacerNotes();
+            Grille[x, y].EffacerNotes();
             Sauvegarde.Sauvegarder(this);
         }
 
+        //Note
         public void Noter( int x, int y,int v)
         {
             if (EstMort()) return;
-            this.Grille[x, y].Notes[v - 1] = this.Grille[x, y].Notes[v - 1] == 0 ? v : 0;
+            //Changement de l'etat de la note affin de l'activer/enlever
+            this.Grille[x, y].Notes[v - 1] = !this.Grille[x, y].Notes[v - 1];
             Sauvegarde.Sauvegarder(this);
         }
 
+        //Efface une case
         public void Effacer(int x, int y)
         {
             if (EstMort()) return;
@@ -275,13 +290,14 @@ namespace Sodoku
             Sauvegarde.Sauvegarder(this);
         }
 
+        //Joue une case
         public bool Jouer( int x, int y, int v)
         {
             if (EstMort()) return false;
 
             if (Grille[x, y].EstUnIndice())  return true;
             Grille[x, y].Valeur = v;
-            if (!CaseEstValide(v, x, y))
+            if (!Grille[x, y].EstValide())
             {
                 /*La case joué n'est pas bonne*/
                 VieRestante--;
@@ -296,6 +312,7 @@ namespace Sodoku
             return true;
         }
 
+        //Donne un indice et retourne sa positon avec sa valeur
         public (int x, int y,int v) Indice()
         {
             if (IndiceRestant == 0 || VieRestante == 0) return (-1, -1,-1);
@@ -315,6 +332,7 @@ namespace Sodoku
             return (-1,-1,-1);
         }
 
+        //Retourne une suite aleatoire de [debut;fin[
         private static int[] SuiteAleatoire(int debut, int fin)
         {
             Random rnd = new Random();
@@ -330,6 +348,7 @@ namespace Sodoku
             }
             return liste;
         }
+        //Supprime tous les element lié
         public void Dispose()
         {
             this.Timer.Stop();
@@ -337,11 +356,12 @@ namespace Sodoku
         }
     }
 
+    //Case du sudoku
     public class Case
     {
         public int Solution { get; protected set; }
         public int Taille;
-        public int[] Notes;
+        public bool[] Notes;
         public bool Indice;
         public int Valeur;
 
@@ -351,32 +371,36 @@ namespace Sodoku
             this.Valeur = Indice ? Solution : 0;
             this.Indice = Indice;
             this.Taille = Taille;
-            this.Notes = new int[Indice ? 0 : Taille];
+            this.Notes = new bool[Indice ? 0 : Taille];
         }
 
+        //Retourne si la valeur dans la case est la bonne valeur
         public bool EstValide()
         {
             return this.Valeur == this.Solution;
         }
 
+        //Retourne si c'est un indice
         public bool EstUnIndice()
         {
             return Indice;
         }
 
+        //Retourne si la case est jouable, c'est a dire vide + n'est pas un indice
         public bool EstJouable()
         {
             return !this.EstUnIndice() && this.EstVide();
         }
 
+        //Efface les notes lié a la case
         public void EffacerNotes()
         {
             for(int i = 0; i < this.Notes.Length; i++)
             {
-                this.Notes[i] = 0;
+                this.Notes[i] = false;
             }
         }
-
+        //Retourne si la case est vide
         public bool EstVide()
         {
             return this.Valeur == 0;
