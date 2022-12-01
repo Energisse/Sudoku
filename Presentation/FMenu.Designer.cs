@@ -45,6 +45,7 @@
             this.bt_effacer = new System.Windows.Forms.Button();
             this.bt_annuler = new System.Windows.Forms.Button();
             this.bt_continuer = new System.Windows.Forms.Button();
+            this.ch_difficute = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.gb_bt_nouvelle_partie.SuspendLayout();
             this.gb_bt_continuer.SuspendLayout();
             this.SuspendLayout();
@@ -109,16 +110,16 @@
             this.ch_Vie,
             this.ch_Indice,
             this.ch_Temps,
-            this.ch_Taille});
+            this.ch_Taille,
+            this.ch_difficute});
             this.lv_sauvegarde.FullRowSelect = true;
-            this.lv_sauvegarde.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.lv_sauvegarde.HideSelection = false;
             this.lv_sauvegarde.ImeMode = System.Windows.Forms.ImeMode.NoControl;
             this.lv_sauvegarde.Location = new System.Drawing.Point(9, 56);
             this.lv_sauvegarde.Margin = new System.Windows.Forms.Padding(0);
             this.lv_sauvegarde.MultiSelect = false;
             this.lv_sauvegarde.Name = "lv_sauvegarde";
-            this.lv_sauvegarde.Size = new System.Drawing.Size(364, 147);
+            this.lv_sauvegarde.Size = new System.Drawing.Size(444, 147);
             this.lv_sauvegarde.TabIndex = 27;
             this.lv_sauvegarde.UseCompatibleStateImageBehavior = false;
             this.lv_sauvegarde.View = System.Windows.Forms.View.Details;
@@ -164,7 +165,7 @@
             this.gb_bt_nouvelle_partie.Controls.Add(this.cb_niveau);
             this.gb_bt_nouvelle_partie.Cursor = System.Windows.Forms.Cursors.Default;
             this.gb_bt_nouvelle_partie.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.gb_bt_nouvelle_partie.Location = new System.Drawing.Point(406, 31);
+            this.gb_bt_nouvelle_partie.Location = new System.Drawing.Point(467, 31);
             this.gb_bt_nouvelle_partie.Name = "gb_bt_nouvelle_partie";
             this.gb_bt_nouvelle_partie.Size = new System.Drawing.Size(289, 172);
             this.gb_bt_nouvelle_partie.TabIndex = 31;
@@ -192,7 +193,7 @@
             this.gb_bt_continuer.Cursor = System.Windows.Forms.Cursors.Default;
             this.gb_bt_continuer.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.gb_bt_continuer.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.gb_bt_continuer.Location = new System.Drawing.Point(406, 31);
+            this.gb_bt_continuer.Location = new System.Drawing.Point(467, 31);
             this.gb_bt_continuer.Name = "gb_bt_continuer";
             this.gb_bt_continuer.Size = new System.Drawing.Size(289, 172);
             this.gb_bt_continuer.TabIndex = 35;
@@ -239,6 +240,10 @@
             this.bt_continuer.UseVisualStyleBackColor = true;
             this.bt_continuer.Click += new System.EventHandler(this.bt_continuer_Click);
             // 
+            // ch_difficute
+            // 
+            this.ch_difficute.Text = "Difficulté";
+            // 
             // FMenu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -276,5 +281,6 @@
         private System.Windows.Forms.Button bt_effacer;
         private System.Windows.Forms.Button bt_annuler;
         private System.Windows.Forms.Button bt_continuer;
+        private System.Windows.Forms.ColumnHeader ch_difficute;
     }
 }

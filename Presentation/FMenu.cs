@@ -58,13 +58,13 @@ namespace Sodoku
             if (lv_sauvegarde.SelectedItems.Count == 0) return;
             gb_bt_continuer.Visible = true;
             gb_bt_nouvelle_partie.Visible = false;
-            Selection = lv_sauvegarde.SelectedItems[0].SubItems[5].Text;
+            Selection = lv_sauvegarde.SelectedItems[0].SubItems[lv_sauvegarde.SelectedItems[0].SubItems.Count - 1].Text;
         }
 
         private void bt_effacer_Click(object sender, EventArgs e)
         {
             if (lv_sauvegarde.SelectedItems.Count == 0) return;
-            Sauvegarde.Supprimer(lv_sauvegarde.SelectedItems[0].SubItems[5].Text);
+            Sauvegarde.Supprimer(lv_sauvegarde.SelectedItems[0].SubItems[lv_sauvegarde.SelectedItems[0].SubItems.Count-1].Text);
             lv_sauvegarde.SelectedItems[0].Remove();
             gb_bt_continuer.Visible = false;
             gb_bt_nouvelle_partie.Visible = true;
@@ -90,6 +90,24 @@ namespace Sodoku
                 l.SubItems.Add((string)sauvegarde["IndiceRestant"]);
                 l.SubItems.Add((string)sauvegarde["Temps"]);
                 l.SubItems.Add((string)sauvegarde["Taille"]);
+                string difficulte ="";
+                switch ((int)sauvegarde["Difficulte"])
+                {
+                    case 1:
+                        difficulte = "Extreme";
+                        break;
+                    case 2:
+                        difficulte = "Difficile";
+                        break;
+                    case 3:
+                        difficulte = "Moyen";
+                        break;
+                    case 4:
+                        difficulte = "Facile";
+                        break;
+
+                }
+                l.SubItems.Add(difficulte);
                 //Colonne invisible permetant de connaitre la partie par sa date de création
                 l.SubItems.Add((string)sauvegarde["DateTimeCreation"]);
                 lv_sauvegarde.Items.Add(l);

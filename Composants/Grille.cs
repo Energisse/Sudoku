@@ -22,8 +22,8 @@ namespace Sodoku.Composants
         {
             get { return _Note; }
             set { 
+                this.Appliquer_Action();
                 _Note = value;
-                this.Appliquer_Action();    
             }
         }
         public Sudoku Sudoku
@@ -44,6 +44,7 @@ namespace Sodoku.Composants
 
         private void Afficher()
         {
+            //Reinitialisation des du fond des Case
             for (int x = 0; x < Sudoku.Taille; x++)
             {
                 for (int y = 0; y < Sudoku.Taille; y++)
@@ -115,6 +116,7 @@ namespace Sodoku.Composants
 
         private void AfficherGrille()
         {
+            //Affichages des chiffres
             for (int x = 0; x < Sudoku.Taille; x++)
             {
                 for (int y = 0; y < Sudoku.Taille; y++)
@@ -122,6 +124,7 @@ namespace Sodoku.Composants
                     this.Rows[y].Cells[x].Value = Sudoku.Grille[x, y].Valeur != 0 ? Sudoku.Grille[x, y].Valeur.ToString() : "";
                 }
             }
+            //Affichage de l'action courant
             if (caseCourante != null && _Note == false)
             {
                 this.Rows[caseCourante.Y].Cells[caseCourante.X].Value = caseCourante.V;
@@ -247,6 +250,15 @@ namespace Sodoku.Composants
         {
             //Si la partie est fini
             if (Sudoku.EstMort() || Sudoku.AGagne()) return;
+
+            //Si "n"  appuyé alors togle noter
+            if ((int)e.KeyChar == 110)
+            {
+                this.Note = !this.Note;
+                this.onPlay();
+                return;
+            }
+
 
             if ((int)e.KeyChar == 13)
             {

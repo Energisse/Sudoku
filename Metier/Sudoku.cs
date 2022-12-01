@@ -42,9 +42,12 @@ namespace Sodoku
         public int IndiceRestant { get; private set; }
         [JsonProperty]
         //CaseRestante avant la victoire
-        public int CaseRestante { get; private set; }
+        private int CaseRestante;
         [JsonProperty]
-        public readonly Difficulte Niveau;
+        //Nombre restants de chaque nombre
+        public int[] NombreRestant;
+        [JsonProperty]
+        public readonly Difficulte Difficulte;
         //temps de jeu
         [JsonProperty]
         public int Temps { get; private set; }
@@ -53,7 +56,7 @@ namespace Sodoku
 
         //Constructeur de la sauvegarde JSON
         [JsonConstructor]
-        private Sudoku(int Taille, Difficulte Niveau, int VieRestante, int IndiceRestant, Case[,] Grille, int CaseRestante, long DateTimeCreation, int LargeurGroupe, int HauteurGroupe, int Temps)
+        private Sudoku(int Taille, Difficulte Difficulte, int VieRestante, int IndiceRestant, Case[,] Grille, int CaseRestante, long DateTimeCreation, int LargeurGroupe, int HauteurGroupe, int Temps, int[] NombreRestant)
         {
             this.Taille = Taille;
             this.VieRestante = VieRestante;
@@ -61,20 +64,21 @@ namespace Sodoku
             this.Grille = Grille;
             this.CaseRestante = CaseRestante;
             this.DateTimeCreation = DateTimeCreation;
-            this.Niveau = Niveau;
+            this.Difficulte = Difficulte;
             this.HauteurGroupe = HauteurGroupe;
             this.LargeurGroupe = LargeurGroupe;
             this.Temps = Temps;
             this.Timer = new Timer();
             this.Timer.Tick += new EventHandler(TimerEvent);
             this.Timer.Interval = 1000;
+            this.NombreRestant = NombreRestant;
             if (!this.EstMort() && !this.AGagne())
             {
                 this.Timer.Start();
             }
         }
 
-        public Sudoku(int taille = 9, Difficulte Niveau = Difficulte.Facile, int vie = 3, int indice = 3)
+        public Sudoku(int taille = 9, Difficulte Difficulte = Difficulte.Facile, int vie = 3, int indice = 3)
         {
             this.Timer = new Timer();
             this.Timer.Tick += new EventHandler(TimerEvent);
@@ -84,7 +88,7 @@ namespace Sodoku
             this.DateTimeCreation = DateTime.Now.ToFileTime();
             this.Taille = taille;
             this.CaseRestante = 0;
-            this.Niveau = Niveau;
+            this.Difficulte = Difficulte;
 
             CalculTailleGroupe();
 
@@ -95,6 +99,10 @@ namespace Sodoku
             //Création de la grille a partir d'une grille vide
             int[,]  grille = new int[taille, taille];
             Resoudre(grille);
+
+            //Initialisation du tableau des nombres restants
+            NombreRestant = new int[taille];
+
 
             //Création de la grille des indices
             int[,]  grilleIndice = (int[,])grille.Clone();
@@ -118,8 +126,10 @@ namespace Sodoku
                 //Limitation pour accelerer la génération
                 else
                 {
+                    //Soustrait le nombre supprimé a la liste des nombres restant
+                    NombreRestant[temp - 1]++;
                     CaseRestante++;
-                    if (suppresion++ >= taille * taille / (int)this.Niveau)
+                    if (suppresion++ >= taille * taille / (int)this.Difficulte)
                     {
                         break;
                     };
@@ -284,6 +294,7 @@ namespace Sodoku
                 if (Grille[x, y].EstValide())
                 {
                     CaseRestante++;
+                    NombreRestant[Grille[x, y].Valeur-1]++;
                 }
                 Grille[x, y].Valeur = 0;
             }
@@ -307,6 +318,7 @@ namespace Sodoku
             }
             /*La case joué est bonne*/
             CaseRestante--;
+            NombreRestant[v - 1]--;
             if(AGagne()) this.Timer.Stop();
             Sauvegarde.Sauvegarder(this);
             return true;
