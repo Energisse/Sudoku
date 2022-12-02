@@ -63,7 +63,7 @@
             this.dataGridViewTextBoxColumn16 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn17 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn18 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.grille1 = new Sodoku.Composants.Grille();
+            this.grille = new Sodoku.Composants.Grille();
             this.dataGridViewTextBoxColumn25 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn26 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn27 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -84,7 +84,7 @@
             this.gb_header.SuspendLayout();
             this.gb_bts.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.img_retour)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.grille1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.grille)).BeginInit();
             this.SuspendLayout();
             // 
             // bt_rejouer
@@ -336,16 +336,16 @@
             this.dataGridViewTextBoxColumn18.Name = "dataGridViewTextBoxColumn18";
             this.dataGridViewTextBoxColumn18.Width = 50;
             // 
-            // grille1
+            // grille
             // 
-            this.grille1.AllowUserToAddRows = false;
-            this.grille1.AllowUserToDeleteRows = false;
-            this.grille1.AllowUserToResizeColumns = false;
-            this.grille1.AllowUserToResizeRows = false;
-            this.grille1.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.grille1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            this.grille1.ColumnHeadersVisible = false;
-            this.grille1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.grille.AllowUserToAddRows = false;
+            this.grille.AllowUserToDeleteRows = false;
+            this.grille.AllowUserToResizeColumns = false;
+            this.grille.AllowUserToResizeRows = false;
+            this.grille.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.grille.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            this.grille.ColumnHeadersVisible = false;
+            this.grille.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.dataGridViewTextBoxColumn25,
             this.dataGridViewTextBoxColumn26,
             this.dataGridViewTextBoxColumn27,
@@ -362,26 +362,27 @@
             dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(170)))), ((int)(((byte)(203)))), ((int)(((byte)(255)))));
             dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.grille1.DefaultCellStyle = dataGridViewCellStyle1;
-            this.grille1.EnableHeadersVisualStyles = false;
-            this.grille1.Font = new System.Drawing.Font("Microsoft Sans Serif", 26F);
-            this.grille1.Location = new System.Drawing.Point(28, 100);
-            this.grille1.Margin = new System.Windows.Forms.Padding(0);
-            this.grille1.MultiSelect = false;
-            this.grille1.Name = "grille1";
-            this.grille1.ReadOnly = true;
-            this.grille1.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.grille1.RowHeadersVisible = false;
-            this.grille1.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
-            this.grille1.ScrollBars = System.Windows.Forms.ScrollBars.None;
-            this.grille1.ShowCellErrors = false;
-            this.grille1.ShowCellToolTips = false;
-            this.grille1.ShowEditingIcon = false;
-            this.grille1.ShowRowErrors = false;
-            this.grille1.Size = new System.Drawing.Size(452, 452);
-            this.grille1.Sudoku = null;
-            this.grille1.TabIndex = 0;
-            this.grille1.TabStop = false;
+            this.grille.DefaultCellStyle = dataGridViewCellStyle1;
+            this.grille.EnableHeadersVisualStyles = false;
+            this.grille.Font = new System.Drawing.Font("Microsoft Sans Serif", 26F);
+            this.grille.Location = new System.Drawing.Point(28, 100);
+            this.grille.Margin = new System.Windows.Forms.Padding(0);
+            this.grille.MultiSelect = false;
+            this.grille.Name = "grille";
+            this.grille.Note = false;
+            this.grille.ReadOnly = true;
+            this.grille.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.grille.RowHeadersVisible = false;
+            this.grille.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
+            this.grille.ScrollBars = System.Windows.Forms.ScrollBars.None;
+            this.grille.ShowCellErrors = false;
+            this.grille.ShowCellToolTips = false;
+            this.grille.ShowEditingIcon = false;
+            this.grille.ShowRowErrors = false;
+            this.grille.Size = new System.Drawing.Size(452, 452);
+            this.grille.Sudoku = null;
+            this.grille.TabIndex = 0;
+            this.grille.TabStop = false;
             // 
             // dataGridViewTextBoxColumn25
             // 
@@ -476,7 +477,7 @@
             this.Controls.Add(this.img_retour);
             this.Controls.Add(this.gb_bts);
             this.Controls.Add(this.gb_header);
-            this.Controls.Add(this.grille1);
+            this.Controls.Add(this.grille);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "Fsodoku";
             this.Padding = new System.Windows.Forms.Padding(30, 100, 30, 50);
@@ -487,7 +488,7 @@
             this.gb_header.ResumeLayout(false);
             this.gb_bts.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.img_retour)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.grille1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.grille)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -508,7 +509,7 @@
         private System.Windows.Forms.GroupBox gb_header;
         private System.Windows.Forms.GroupBox gb_bts;
         private System.Windows.Forms.PictureBox img_retour;
-        private Composants.Grille grille1;
+        private Composants.Grille grille;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;

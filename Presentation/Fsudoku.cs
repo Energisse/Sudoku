@@ -53,17 +53,18 @@ namespace Sodoku
 
         private void Init()
         {
-            grille1.Sudoku = this.Sudoku;
+            grille.Sudoku = this.Sudoku;
             this.Sudoku.Tick(this.Timer);
             timerLb.Afficher(this.Sudoku.Temps);
             this.Width = (Taille > 9 ? Taille :9 )  * 50 + this.Padding.Right + this.Padding.Left;
             this.Height =  Taille * 50 + 275;
-            grille1.Width = Taille * 50 +1;
-            grille1.Height = Taille * 50 +1;
-            grille1.Location = new Point(this.Width/2- grille1.Width/2, grille1.Location.Y);
+            grille.Width = Taille * 50 +1;
+            grille.Height = Taille * 50 +1;
+            grille.Location = new Point(this.Width/2- grille.Width/2, grille.Location.Y);
             gb_header.Location = new Point(this.Width / 2 - gb_header.Width / 2, gb_header.Location.Y);
-            gb_bts.Location = new Point(this.Width / 2 - gb_bts.Width / 2, grille1.Location.Y + grille1.Height + 10);
+            gb_bts.Location = new Point(this.Width / 2 - gb_bts.Width / 2, grille.Location.Y + grille.Height + 10);
 
+            //Création des boutons pour chaque chiffre
             Buttons = new Button[Taille];
             for (int i = 0; i < this.Taille; i++)
             {
@@ -75,11 +76,11 @@ namespace Sodoku
                 boutton.Height = 44;
                 boutton.TextAlign = ContentAlignment.MiddleCenter;
                 boutton.Click += new System.EventHandler(this.Bts_nb_click);
-                boutton.Location = new Point(grille1.Location.X + i * 50 + 3, grille1.Location.Y + Taille * 50 + 75);
+                boutton.Location = new Point(grille.Location.X + i * 50 + 3, grille.Location.Y + Taille * 50 + 75);
                 Buttons[i]=boutton;
                 this.Controls.Add(boutton);
             }
-            grille1.onPlay += Afficher;
+            grille.onPlay += Afficher;
             Afficher();
         }
 
@@ -87,7 +88,7 @@ namespace Sodoku
         {
             lb_vie.Text = Sudoku.VieRestante.ToString();
             lb_indice.Text = Sudoku.IndiceRestant.ToString();
-            bt_notes.BackColor = grille1.Note ? Color.FromArgb(255, 170, 203, 255) : Color.White;
+            bt_notes.BackColor = grille.Note ? Color.FromArgb(255, 170, 203, 255) : Color.White;
             for (int i = 0; i < Sudoku.NombreRestant.Length; i++)
             {
                 if(Sudoku.NombreRestant[i] > 0)
@@ -110,31 +111,31 @@ namespace Sodoku
             Sauvegarde.Supprimer(this.Sudoku.DateTimeCreation.ToString());
             this.Sudoku = new Sudoku(this.Taille, this.Niveau,this.Vie,this.Indice);
             this.Sudoku.Tick(this.Timer);
-            grille1.Sudoku = this.Sudoku;
+            grille.Sudoku = this.Sudoku;
             timerLb.Afficher(this.Sudoku.Temps);
             Afficher();
         }
 
         private void Bt_indice_Click(object sender, EventArgs e)
         {
-            grille1.Indice();
+            grille.Indice();
         }
 
         private void Bt_notes_Click(object sender, EventArgs e)
         {
-            grille1.Note = !grille1.Note;
-            bt_notes.BackColor = grille1.Note ? Color.FromArgb(255, 170, 203, 255) : Color.White;
+            grille.Note = !grille.Note;
+            bt_notes.BackColor = grille.Note ? Color.FromArgb(255, 170, 203, 255) : Color.White;
         }
 
         private void Bts_nb_click(object sender, EventArgs e)
         {
             Button btn = (Button)sender;
-            grille1.Placer(grille1.CurrentCell.ColumnIndex, grille1.CurrentCell.RowIndex, Int16.Parse(btn.Text.ToString()));
+            grille.Placer(grille.CurrentCell.ColumnIndex, grille.CurrentCell.RowIndex, Int16.Parse(btn.Text.ToString()));
         }
 
         private void Bt_effacer_Click(object sender, EventArgs e)
         {
-            grille1.Effacer(grille1.CurrentCell.ColumnIndex, grille1.CurrentCell.RowIndex);
+            grille.Effacer(grille.CurrentCell.ColumnIndex, grille.CurrentCell.RowIndex);
         }
 
         private void Quiter(object sender, EventArgs e)

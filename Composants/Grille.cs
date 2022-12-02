@@ -42,6 +42,7 @@ namespace Sodoku.Composants
             this.Font = new Font("Microsoft Sans Serif", 26);
         }
 
+        //Affiche les couleurs des case voisine et les cases avec la même valeur
         private void Afficher()
         {
             //Reinitialisation des du fond des Case
@@ -99,6 +100,7 @@ namespace Sodoku.Composants
             }
 
         }
+        //Efface une case ou une note
         public void Effacer(int x, int y)
         {
             if (Note)
@@ -114,6 +116,7 @@ namespace Sodoku.Composants
             AfficherGrille();
         }
 
+        //Affiches la grille
         private void AfficherGrille()
         {
             //Affichages des chiffres
@@ -161,6 +164,7 @@ namespace Sodoku.Composants
             }
             AfficherGrille();
         }
+        //Affiche la grille complete
         private void AfficherGrilleMort()
         {
             for (int x = 0; x < Sudoku.Taille; x++)
@@ -168,7 +172,10 @@ namespace Sodoku.Composants
                 for (int y = 0; y < Sudoku.Taille; y++)
                 {
                     this.Rows[y].Cells[x].Value = Sudoku.Grille[x, y].Solution.ToString();
-                    ((DataGridViewCase)this.Rows[y].Cells[x]).Reponse = true;
+                    if (!Sudoku.Grille[x, y].EstValide())
+                    {
+                        ((DataGridViewCase)this.Rows[y].Cells[x]).Reponse = true;
+                    }
                 }
             }
         }
@@ -199,13 +206,13 @@ namespace Sodoku.Composants
                onPlay();
                if (Sudoku.EstMort())
                {
-                   MessageBox.Show("Et c'est perdu", "Perdu");
+                   MessageBox.Show("C'est perdu", "Perdu");
                    AfficherGrilleMort();
                    return;
                }
                else if (Sudoku.AGagne())
                {
-                   MessageBox.Show("Et c'est gagné", "Gagné");
+                   MessageBox.Show("C'est gagné", "Gagné");
                }
             }
             AfficherGrille();
@@ -217,7 +224,7 @@ namespace Sodoku.Composants
             int largeur = (int)Math.Ceiling(Math.Sqrt(Sudoku.Taille));
             int police = 30 / largeur;
          
-
+            //Affiche l'action "Note" courante 
             if (caseCourante != null && _Note == true)
             {
                 if(Sudoku.Grille[caseCourante.X, caseCourante.Y].EstJouable())
@@ -229,6 +236,7 @@ namespace Sodoku.Composants
                 }
 
             }
+            //Affiche les lignes noires
             for (int x = 0; x < Sudoku.Taille; x += Sudoku.LargeurGroupe)
             {
                 e.Graphics.DrawLine(new Pen(Color.Black, 2), x * 50, 0, x * 50, Sudoku.Taille * 50);
@@ -239,6 +247,7 @@ namespace Sodoku.Composants
             }
         }
 
+        //Aplique l'action courante
         private void Appliquer_Action()
         {
             if (caseCourante == null) return;
@@ -259,7 +268,7 @@ namespace Sodoku.Composants
                 return;
             }
 
-
+            //Si "Entrée" est appuyé on applique l'action
             if ((int)e.KeyChar == 13)
             {
                 this.Appliquer_Action();
@@ -280,32 +289,35 @@ namespace Sodoku.Composants
                 AfficherGrille();
                 return;
             }
+            
+            if (!Sudoku.Grille[x, y].EstJouable()) return;
 
             //On prends uniquement les chiffre de 0 a 9
             //Ascii code des nombres [0;9] = [48;57]
             if ((int)e.KeyChar < 48 || (int)e.KeyChar > 57) return;
+            //On limite le chiffre max a la taille du sudoku, si la taille est 6, le plus grand chiffre jouable est 6
             if ((int)e.KeyChar-48 > Sudoku.Taille) return;
+            //Concatenation des chiffres saisie
             int valeurCourante = Int16.Parse((caseCourante == null ? "0" : caseCourante.V.ToString()) + e.KeyChar);
             if (valeurCourante <= 0) return;
+
             if (valeurCourante > Sudoku.Taille)
             {
                 if ((int)e.KeyChar == 48) return;
-
                 valeurCourante = (int)e.KeyChar-48;
-
             }
-
-            if (!Sudoku.Grille[x, y].EstJouable()) return;
             caseCourante = new CaseCourante(x, y, valeurCourante);
             AfficherGrille();
         }
 
+        //Lorsque la case courante est changé on applique l'action
         protected override void OnCurrentCellChanged(EventArgs e)
         {
             this.Appliquer_Action();
             Afficher();
         }
 
+        //Empeche le deplacement du curseur lorsque "Entrée" est appuyé 
         protected override void OnKeyDown(KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
